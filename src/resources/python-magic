@@ -1,0 +1,20 @@
+#
+# Make sure the PYTHONPATH environmental variable contains the
+# directory(s) for the modules listed below.
+#
+# Uncomment any func_* which are included in your module. If
+# rlm_python is called for a section which does not have
+# a function defined, it will return NOOP.
+#
+python magic {
+	module = radiusauth
+
+	python_path = /home/pi/gateway/gateway:/usr/lib/python2.7:/usr/lib/python2.7/lib-dynload:/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages
+
+	mod_authorize = ${.module}
+	func_authorize = authorize
+
+	mod_authenticate = ${.module}
+	func_authenticate = authenticate
+
+}

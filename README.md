@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/ethereum/pyethereum.svg?branch=develop)](https://travis-ci.org/ethereum/pyethereum)
-
 This repository contains the source code for the following magic-network services:
 
 1. the Radius Gateway Server (to be used in conjunction with a router/AP device)
@@ -56,20 +54,23 @@ coming soon.*
 1. Adjust gateway config with AP details and restart. (external guide under development)
 1. Verify connection with the magic-cli. (external guide under development)
 
+### Minimal Gateway Configuration:
+For the gateway to run properly, you'll need to complete the config file found in the `docker-compose.yml` file 
+"environments" section.
+
 ### Gateway Tests:
 From `src/gateway`, run: 
 ```
 python setup.py test
-```
+``` 
 
 ### Advanced Configuration:
 
-The gateway server extends a default config found at `/src/gateway/config/default-config.hjson`. Currently
+The gateway server extends a default config found at `/conf/default-config.hjson`. Currently
 supported options are found in the [Gateway Configuration Reference](https://www.youtube.com/watch?v=dQw4w9WgXcQ). In order 
 to extend the default configuration:
 
-1. **Use environment variables defined in the docker-compose.yml 'environment' section.** 
-use `default-config.hjson`as reference. To override default config keys, specify the 
+1. **Extend with docker-compose.yml environment variables.** To override default config keys, specify the 
 group and key separated by a underscore character, for example: ADMIN_ACCOUNT, or ADMIN_USER_MIN_BALANCE.
     ```
     services:
@@ -86,12 +87,12 @@ group and key separated by a underscore character, for example: ADMIN_ACCOUNT, o
           - BILLING_TYPE=session
     ```
 
-1. **Extend with a user-config.hjson file.*** Example user-config file found in `/conf/user-config.example.hjson`:
+1. **Extend with a user-config.hjson file.** Example user-config file found in `/conf/user-config.example.hjson`:
 
     1. Create a file named `/conf/user-config.hjson`
     1. Update with your specific settings
-    1. Run `docker-compose build` on x86 machines or`docker-compose build --build-arg ARCH=armhf` to 
-    apply the changes.  
+    1. Run `docker-compose build` on x86 machines or`docker-compose build --build-arg ARCH=armhf` on ARM machines in order
+    to apply the changes.
 
 # Payment Provider Service
 Not implemented yet.

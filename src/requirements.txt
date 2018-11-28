@@ -1,0 +1,6 @@
+asyncio==3.4.3
+ethereum==2.3.2
+Flask==1.0.2
+hjson==3.0.1
+pyrad==2.1
+web3==4.8.1

@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+
+# magic_network - command line interface (CLI) for connecting to the Magic Network
+#
+# Author: Magic Foundation <support@hologram.io>
+#
+# Copyright 2018 - Magic Foundation
+#
+#
+# LICENSE: Distributed under the terms of the MIT License
+
+import argparse
+import logging
+import os
+from configparser import ConfigParser
+
+from exceptions.magic_error import MagicError
+from gateway.magic import MagicGateway
+
+config = ConfigParser()
+
+# ---- Command Descriptions --------- #
+help_gateway = 'Test'
+help_connect = 'Connect to the server using the gateway.'
+help_disconnect = 'Disconnect from the server'
+help_authenticate = 'Authenticate a user.'
+help_version = 'Get version'
+
+
+# --------- Connect args ----------- #
+
+def connect():
+
+    mg = MagicGateway()
+    mg.run()
+
+
+def disconnect():
+    pass
+
+
+def parse_magic_connect_args(parser):
+    """
+    Parse arguments taken in connecting to the magic gateway
+
+    :param parser: a subparser object
+    :return:
+    """
+
+    subparsers = parser.add_subparsers(title='subcommands')
+
+    parser_connect = subparsers.add_parser('connect', help=help_connect)
+    parser_connect.set_defaults(command_selected='connect')
+    parser_disconnect = subparsers.add_parser('disconnect', help=help_disconnect)
+    parser_disconnect.set_defaults(command_selected='disconnect')
+
+# --------- Config Arguments ------- #
+
+
+def update_config(**kwargs):
+    """
+    Update the user config file gateway/magic-config.hjson
+    :param kwargs: the field(s) to be updated
+    :return: nothing
+    """
+    pass
+
+
+# --------- Valid Commands --------- #
+
+_command_handlers = {
+    'connect': connect,
+    'disconnect': disconnect,
+    'update-config': update_config
+}
+
+
+def parse_operations():
+
+    """
+    Parse incoming arguments from the command line
+    :return: a dictionary of arguments
+    """
+
+    parser = argparse.ArgumentParser(description="CLI for connecting to the magic network")
+    subparsers = parser.add_subparsers(title='subcommands', description='valid subcommands')
+
+    # Parse connect subcommands
+    parser_connect = subparsers.add_parser('gateway', help=help_gateway)
+    parse_magic_connect_args(parser_connect)
+
+    parser_version = subparsers.add_parser('version', help=help_version)
+    parse_version(parser_version)
+
+    return vars(parser.parse_args())
+
+def parse_version(parser):
+    parser.set_defaults(command_selected='version')
+
+def run_version():
+    verfile = os.path.dirname(__file__) + '/version.txt'
+    version = open(verfile).read().split()[0]
+    print(version)
+
+def main():
+
+    args = parse_operations()
+
+    logger = logging.getLogger('')
+
+    command_selected = args['command_selected'].split('_', 1)[0]
+    if args['command_selected'] == 'version':
+        run_version()
+    elif command_selected not in _command_handlers:
+        logger.error('Internal script error - invalid command: %s ',
+                     args['command_selected'])
+    else:
+        try:
+            _command_handlers[command_selected]()
+        except MagicError as e:
+            logger.error(str(e))
+
+
+if __name__ == '__main__':
+    main()

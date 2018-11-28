@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  magic-agent:
+    build: .
+    image: magicnetwork/magic-agent
+    network_mode: "host"
+    ports:
+      - "1812:1812/udp"
+      - "1813:1813/udp"
+      - "5000:5000"
+    environment:
+      - ADMIN_ROUTER_ADDRESS=192.168.1.1
+      - ADMIN_RADIUS_SECRET=magicsecret
