@@ -86,7 +86,7 @@ There are two ways to setup a Magic Agent development environment.
     # Start docker in your Magic directory
     docker run -t -i -v `pwd`:/magic-agent/ -w /magic-agent/ python:3 bash
     pip install -e  
-    ``  
+    ``` 
     
     The Magic code is mounted inside of the Docker container, so if you change something using your favorite IDE, you can directly test is in the container.
 

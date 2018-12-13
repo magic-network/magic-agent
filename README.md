@@ -1,3 +1,5 @@
+# Magic Agent
+
 This repository contains the source code for the following magic-network services:
 
 1. the Radius Gateway Server (to be used in conjunction with a router/AP device)
