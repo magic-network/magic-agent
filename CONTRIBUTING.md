@@ -33,7 +33,7 @@ to implement it.
 
 ### Implement Features
 
-Look through the [Github Issues](https://github.com/magic-network/magic-agent/issues) for features. Any unassigned "Improvement" issue is open to whoever wants to implement it.
+Look through the [Github Issues](https://github.com/magic-network/magic-agent/issues) for features. Any unassigned "enhancement" issue is open to whoever wants to implement it.
 
 ### Improve Documentation
 
@@ -99,7 +99,8 @@ Coming soon...
 Before you submit a pull request from your forked repo, check that it
 meets these guidelines:
 
+1. Every pull request should have an associated [Github Issue](https://github.com/magic-network/magic-agent/issues).
 1. Please squash commits and resolve all conflicts.
-1. If the pull request adds functionality, the docs should be updated as part of the same PR. Doc string are often sufficient. 
+1. If the pull request adds functionality, the docs should be updated. 
 1. Please read this excellent [article](http://chris.beams.io/posts/git-commit/) on commit messages and adhere to them. It makes the lives of those who come after you a lot easier.
 
