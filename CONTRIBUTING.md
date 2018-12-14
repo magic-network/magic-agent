@@ -33,12 +33,12 @@ to implement it.
 
 ### Implement Features
 
-Look through the [Github Issues](https://github.com/magic-network/magic-agent/issues) for features. Any unassigned "enhancement" issue is open to whoever wants to implement it.
+Look through the [Github Issues](https://github.com/magic-network/magic-agent/issues) for features. Any unassigned "enhancement" issue is open to whoever wants to implement it. New features requests submitted to us are reviewed (see Submit Feedback) and tagged with "enhancement" if prioritized.
 
 ### Improve Documentation
 
 Magic could always use better documentation, or even on the web as blog posts or
-articles.  Official source for documentation are found on [the documentation repository](https://github.com/magic-network/magic-docs).
+articles. If you do write a blog post please credit Magic.  Official source for documentation are found on [the documentation repository](https://github.com/magic-network/magic-docs).
 
 ### Submit Feedback
 
