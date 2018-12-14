@@ -20,17 +20,14 @@ from magic.gateway.magic import MagicGateway
 config = ConfigParser()
 
 # ---- Command Descriptions --------- #
-help_gateway = 'Test'
-help_connect = 'Connect to the server using the gateway.'
-help_disconnect = 'Disconnect from the server'
-help_authenticate = 'Authenticate a user.'
-help_version = 'Get version'
-
+help_gateway = 'Gateway provider agent commands.'
+help_gateway_connect = 'Start gateway server.'
+help_gateway_disconnect = 'Stop gateway server.'
+help_version = 'Get agent version.'
 
 # --------- Connect args ----------- #
 
 def connect():
-
     mg = MagicGateway()
     mg.run()
 
@@ -49,9 +46,9 @@ def parse_magic_connect_args(parser):
 
     subparsers = parser.add_subparsers(title='subcommands')
 
-    parser_connect = subparsers.add_parser('connect', help=help_connect)
+    parser_connect = subparsers.add_parser('connect', help=help_gateway_connect)
     parser_connect.set_defaults(command_selected='connect')
-    parser_disconnect = subparsers.add_parser('disconnect', help=help_disconnect)
+    parser_disconnect = subparsers.add_parser('disconnect', help=help_gateway_disconnect)
     parser_disconnect.set_defaults(command_selected='disconnect')
 
 # --------- Config Arguments ------- #
