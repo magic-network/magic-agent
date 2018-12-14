@@ -72,7 +72,7 @@ There are two ways to setup a Magic Agent development environment.
     ```bash
     virtualenv env
     source env/bin/activate
-    pip install -e .[devel]
+    pip install -e .
     ```
 
     Hint: We enjoy use of [pyenv](https://github.com/pyenv/pyenv) & [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv) which allows you to
