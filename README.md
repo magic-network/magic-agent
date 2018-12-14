@@ -1,3 +1,5 @@
+# Magic Agent
+
 This repository contains the source code for the following magic-network services:
 
 1. the Radius Gateway Server (to be used in conjunction with a router/AP device)
@@ -9,7 +11,8 @@ The fastest way to install and run these services is to use docker.  The recomme
 1. [docker-compose](https://docs.docker.com/compose/install/) (1.22.0+)
 
 #### Want to help?
-Fork, improve and PR. ;-)
+Fork, improve and PR. View our [contributing guide](https://github.com/magic-network/magic-agent/blob/master/CONTRIBUTING.md) 
+for more details.
 
 ---
 
