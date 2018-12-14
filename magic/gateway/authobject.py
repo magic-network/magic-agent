@@ -4,8 +4,6 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import (bytes, str)
 import json
-         
-
 
 class AuthObject(object):
     def __init__(self, address = '', password = '', sess = ''):

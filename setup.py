@@ -18,6 +18,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires = open('requirements.txt').read().split(),
-    scripts=['magic-network'],
+    setup_requires=["pytest-runner"],
+    tests_require = ["pytest"],
+    scripts=['magic/bin/magic-network'],
     license='MIT'
 )

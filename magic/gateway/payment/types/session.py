@@ -1,4 +1,4 @@
-from gateway.payment.payment_type_interface import PaymentTypeInterface
+from magic.gateway.payment.payment_type_interface import PaymentTypeInterface
 import time
 
 class SessionPaymentType(PaymentTypeInterface):

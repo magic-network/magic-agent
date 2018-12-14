@@ -1,5 +1,5 @@
 from web3 import Web3
-from gateway.utils.async_tools import sync_to_async
+from magic.gateway.utils.async_tools import sync_to_async
 
 ESCROW_AMOUNT = 10000
 
