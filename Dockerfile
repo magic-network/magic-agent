@@ -26,7 +26,6 @@ WORKDIR /home/pi/gateway
 RUN pip3 install -r requirements.txt
 
 ADD src /home/pi/gateway
-ADD conf/default-config.hjson /home/pi/gateway/gateway/config
 ADD conf/user-config.hjson /home/pi/gateway/gateway/config
 
 ADD src/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel

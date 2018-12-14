@@ -61,15 +61,9 @@ coming soon.*
 For the gateway to run properly, you'll need to complete the config file found in the `docker-compose.yml` file 
 "environments" section.
 
-### Gateway Tests:
-From `src/gateway`, run: 
-```
-python setup.py test
-``` 
-
 ### Advanced Configuration:
 
-The gateway server extends a default config found at `/conf/default-config.hjson`. Currently
+The gateway server extends a default config found at `/magic/gateway/config/default-config.hjson`. Currently
 supported options are found in the [Gateway Configuration Reference](https://www.youtube.com/watch?v=dQw4w9WgXcQ). In order 
 to extend the default configuration:
 
