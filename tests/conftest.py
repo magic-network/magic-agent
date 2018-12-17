@@ -1,5 +1,5 @@
 import pytest
-from magic.gateway.magic import MagicGateway
+from magic.gateway.app import MagicGateway
 
 @pytest.fixture(scope='session', autouse=True)
 def gateway():

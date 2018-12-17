@@ -2,9 +2,9 @@
 from magic.gateway.magicradiusd import RadiusDaemon
 from magic.gateway.radiusreq import RadiusReq
 from magic.gateway.magicflaskd import FlaskDaemon
-from magic.gateway.app.user import User
+from magic.gateway.user import User
 from magic.gateway.payment.payment_type import PaymentTypeFactory
-from magic.gateway.config.configloader import ConfigLoader
+from magic.configloader import ConfigLoader
 from magic.gateway.utils.eth import parse_address
 import logging
 import signal
@@ -16,9 +16,8 @@ import os
 class MagicGateway():
 
     def __init__(self):
+        self.load_config()
         self.logger = logging.getLogger('MagicGateway')
-        self.config = ConfigLoader()
-        self.config.load()
         self.loop = asyncio.get_event_loop()
         self.radius_daemon = RadiusDaemon(self)
         self.flask_daemon = FlaskDaemon(self)
@@ -28,6 +27,16 @@ class MagicGateway():
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
         self.users = {}
+
+    def load_config(self):
+
+        root_folder_path = os.path.dirname(os.path.realpath(__file__))
+        default_config_path = root_folder_path + '/default-config.hjson'
+        user_config_path = root_folder_path + '/user-config.hjson'
+
+        self.config = ConfigLoader()
+        self.config.load(default_config_path=default_config_path, user_config_path=user_config_path)
+
 
     def load_eth_contracts(self):
 

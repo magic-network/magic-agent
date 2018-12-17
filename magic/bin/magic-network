@@ -15,7 +15,8 @@ import os
 from configparser import ConfigParser
 
 from magic.exceptions.magic_error import MagicError
-from magic.gateway.magic import MagicGateway
+from magic.gateway.app import MagicGateway
+from magic.payment.app import MagicPayment
 
 config = ConfigParser()
 
@@ -34,9 +35,8 @@ def gateway_start():
     mg.run()
 
 def payment_start():
-    # pe = PaymentEnabler()
-    # pe.run()
-    pass
+    pe = MagicPayment()
+    pe.run()
 
 def parse_magic_gateway_args(parser):
     """

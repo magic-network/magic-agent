@@ -7,23 +7,20 @@ class ConfigLoader(collections.UserDict):
     def __init__(self):
         super().__init__()
 
-    def load(self):
-        root_folder_path = os.path.dirname(os.path.realpath(__file__))
-        default_config_file = root_folder_path + '/default-config.hjson'
-        user_config_file = root_folder_path + '/user-config.hjson'
+    def load(self, default_config_path, user_config_path):
 
         self.data.clear()
 
         # Load default/base config.
         try:
-            with open(default_config_file) as f:
+            with open(default_config_path) as f:
                 self.data = hjson.load(f)
         except FileNotFoundError as e:
             raise Exception('Default config is missing. Expected file to exist: %s' % default_config_file)
 
         # Apply user-specific config file:
         try:
-            with open(user_config_file) as f:
+            with open(user_config_path) as f:
                 user_config = hjson.load(f)
                 for config_group_key in self.data:
                     config_group_value = self.data[config_group_key]
