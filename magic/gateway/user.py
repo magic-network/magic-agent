@@ -2,7 +2,7 @@ import time
 import web3
 from web3 import Web3
 from magic.gateway.payment_channel import PaymentChannel
-from magic.gateway.utils.async_tools import sync_to_async
+from magic.utils.async_tools import sync_to_async
 from magic.gateway.payment.payment_type_exception import PaymentTypeException
 
 class User():

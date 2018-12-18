@@ -1,7 +1,7 @@
 # Magic Gateway Alpha
 from magic.payment.magicflaskd import FlaskDaemon
 from magic.configloader import ConfigLoader
-from magic.gateway.utils.eth import parse_address
+from magic.utils.eth import parse_address
 import logging
 import signal
 import asyncio
