@@ -26,6 +26,7 @@ WORKDIR /home/pi/agent
 RUN pip3 install -r requirements.txt
 
 ADD . /home/pi/agent
+RUN pip3 install .
 ADD conf/user-config.hjson /home/pi/agent/gateway/config
 
 ADD magic/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
