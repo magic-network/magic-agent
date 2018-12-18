@@ -1,2 +1,2 @@
-include version.txt
 recursive-include * *
+include version.txt
