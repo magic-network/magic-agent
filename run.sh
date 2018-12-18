@@ -1,3 +1,3 @@
 #!/bin/bash
-python3 /home/pi/gateway/magic-network gateway start &
+python3 /home/pi/agent/magic-network gateway start &
 freeradius -X
