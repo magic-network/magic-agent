@@ -1,4 +1,4 @@
-from gateway.payment.types.session import SessionPaymentType
+from magic.gateway.payment.types.session import SessionPaymentType
 
 class PaymentTypeFactory:
 

@@ -1,7 +1,7 @@
 {
   "admin": {
-    "eth_address": "0x000"
-    "eth_private_key": "000"
+    "eth_address": "0x0000000000000000000000000000000000000000"
+    "eth_private_key": "0000000000000000000000000000000000000000"
     "infura_api_key": "50686e66f0c143dc968ee9ab73a726a8"
     "user_min_balance": 0
     "whitelist": [ "0x001", "0x002", "0x003" ]

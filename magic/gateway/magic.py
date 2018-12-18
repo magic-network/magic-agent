@@ -1,11 +1,11 @@
 # Magic Gateway Alpha
-from gateway.magicradiusd import RadiusDaemon
-from gateway.radiusreq import RadiusReq
-from gateway.magicflaskd import FlaskDaemon
-from gateway.app.user import User
-from gateway.payment.payment_type import PaymentTypeFactory
-from gateway.config.configloader import ConfigLoader
-from gateway.utils.eth import parse_address
+from magic.gateway.magicradiusd import RadiusDaemon
+from magic.gateway.radiusreq import RadiusReq
+from magic.gateway.magicflaskd import FlaskDaemon
+from magic.gateway.app.user import User
+from magic.gateway.payment.payment_type import PaymentTypeFactory
+from magic.gateway.config.configloader import ConfigLoader
+from magic.gateway.utils.eth import parse_address
 import logging
 import signal
 import asyncio
@@ -32,7 +32,7 @@ class MagicGateway():
     def load_eth_contracts(self):
 
         self.mgc_contract_address = parse_address(self.config['dev']['mgc_address'])
-        self.address = parse_address(self.config['admin']['account'].lower())
+        self.address = parse_address(self.config['admin']['eth_address'].lower())
 
         root_folder_path = os.path.dirname(os.path.realpath(__file__)) + "/.."
         mgc_abi_file = root_folder_path + '/abi/MagicToken.json'
@@ -66,7 +66,7 @@ class MagicGateway():
         # signal.signal(signal.SIGTERM, self.sighandler)
         # signal.signal(signal.SIGINT, self.sighandler)
 
-        self.logger.warning("Magic App Service started using eth account %s" % self.config['admin']['account'])
+        self.logger.warning("Magic App Service started using eth address %s" % self.config['admin']['eth_address'])
 
         self.radius_daemon.daemon = True
         self.radius_daemon.start()

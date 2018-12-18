@@ -1,5 +1,5 @@
-from gateway.authobject import AuthObject
-from gateway.utils.eth import recover, add_hex_prefix
+from magic.gateway.authobject import AuthObject
+from magic.gateway.utils.eth import recover, add_hex_prefix
 import logging
 import os
 import socket
