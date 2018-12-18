@@ -2,9 +2,9 @@
 from magic.gateway.magicradiusd import RadiusDaemon
 from magic.gateway.radiusreq import RadiusReq
 from magic.gateway.magicflaskd import FlaskDaemon
-from magic.gateway.app.user import User
+from magic.gateway.user import User
 from magic.gateway.payment.payment_type import PaymentTypeFactory
-from magic.gateway.config.configloader import ConfigLoader
+from magic.configloader import ConfigLoader
 from magic.gateway.utils.eth import parse_address
 import logging
 import signal
