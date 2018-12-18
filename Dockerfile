@@ -20,18 +20,18 @@ RUN apt-get update && \
 RUN pip install future
 
 RUN mkdir -p /home/pi/gateway
-ADD src/requirements.txt /home/pi/gateway/requirements.txt
+ADD requirements.txt /home/pi/gateway/requirements.txt
 
 WORKDIR /home/pi/gateway
 RUN pip3 install -r requirements.txt
 
-ADD src /home/pi/gateway
+ADD magic /home/pi/gateway
 ADD conf/user-config.hjson /home/pi/gateway/gateway/config
 
-ADD src/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
-ADD src/resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
-ADD src/resources/eap /etc/freeradius/3.0/mods-enabled/eap
-ADD src/resources/clients.conf /etc/freeradius/3.0/clients.conf
+ADD magic/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
+ADD magic/resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
+ADD magic/resources/eap /etc/freeradius/3.0/mods-enabled/eap
+ADD magic/resources/clients.conf /etc/freeradius/3.0/clients.conf
 
 
 ADD run.sh /run.sh
