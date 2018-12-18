@@ -15,28 +15,30 @@ import os
 from configparser import ConfigParser
 
 from magic.exceptions.magic_error import MagicError
-from magic.gateway.magic import MagicGateway
+from magic.gateway.app import MagicGateway
+from magic.payment.app import MagicPayment
 
 config = ConfigParser()
 
 # ---- Command Descriptions --------- #
-help_gateway = 'Gateway provider agent commands.'
-help_gateway_connect = 'Start gateway server.'
-help_gateway_disconnect = 'Stop gateway server.'
 help_version = 'Get agent version.'
+help_gateway = 'Gateway provider agent commands.'
+help_gateway_start = 'Start provider gateway server.'
+help_payment = 'Payment enabler agent commands.'
+help_payment_start = 'Start payment enabler server.'
+
 
 # --------- Connect args ----------- #
 
-def connect():
+def gateway_start():
     mg = MagicGateway()
     mg.run()
 
+def payment_start():
+    pe = MagicPayment()
+    pe.run()
 
-def disconnect():
-    pass
-
-
-def parse_magic_connect_args(parser):
+def parse_magic_gateway_args(parser):
     """
     Parse arguments taken in connecting to the magic gateway
 
@@ -46,31 +48,34 @@ def parse_magic_connect_args(parser):
 
     subparsers = parser.add_subparsers(title='subcommands')
 
-    parser_connect = subparsers.add_parser('connect', help=help_gateway_connect)
-    parser_connect.set_defaults(command_selected='connect')
-    parser_disconnect = subparsers.add_parser('disconnect', help=help_gateway_disconnect)
-    parser_disconnect.set_defaults(command_selected='disconnect')
+    parser_gateway = subparsers.add_parser('version', help=help_version)
+    parser_gateway.set_defaults(command_selected='version')
 
-# --------- Config Arguments ------- #
+    parser_gateway = subparsers.add_parser('start', help=help_gateway_start)
+    parser_gateway.set_defaults(command_selected='gateway_start')
 
-
-def update_config(**kwargs):
+def parse_magic_payment_args(parser):
     """
-    Update the user config file gateway/magic-config.hjson
-    :param kwargs: the field(s) to be updated
-    :return: nothing
-    """
-    pass
+    Parse arguments taken in connecting to the magic gateway
 
+    :param parser: a subparser object
+    :return:
+    """
+
+    subparsers = parser.add_subparsers(title='subcommands')
+
+    parser_payment = subparsers.add_parser('version', help=help_version)
+    parser_payment.set_defaults(command_selected='version')
+
+    parser_payment = subparsers.add_parser('start', help=help_payment_start)
+    parser_payment.set_defaults(command_selected='payment_start')
 
 # --------- Valid Commands --------- #
 
 _command_handlers = {
-    'connect': connect,
-    'disconnect': disconnect,
-    'update-config': update_config
+    'gateway_start': gateway_start,
+    'payment_start': payment_start
 }
-
 
 def parse_operations():
 
@@ -83,8 +88,11 @@ def parse_operations():
     subparsers = parser.add_subparsers(title='subcommands', description='valid subcommands')
 
     # Parse connect subcommands
-    parser_connect = subparsers.add_parser('gateway', help=help_gateway)
-    parse_magic_connect_args(parser_connect)
+    parser_gateway = subparsers.add_parser('gateway', help=help_gateway)
+    parse_magic_gateway_args(parser_gateway)
+
+    parser_payment = subparsers.add_parser('payment', help=help_payment)
+    parse_magic_payment_args(parser_payment)
 
     parser_version = subparsers.add_parser('version', help=help_version)
     parse_version(parser_version)
@@ -102,18 +110,27 @@ def run_version():
 def main():
 
     args = parse_operations()
-
     logger = logging.getLogger('')
 
-    command_selected = args['command_selected'].split('_', 1)[0]
-    if args['command_selected'] == 'version':
+    try:
+        command_args = args['command_selected'].split('_')
+    except KeyError as error:
+        logger.error('Invalid agent command. For help: \n    magic-network -h')
+        return
+
+    if len(command_args) == 1:
+        selected_command = command_args[0]
+    else:
+        selected_command = command_args[1]
+
+    if selected_command == 'version':
         run_version()
-    elif command_selected not in _command_handlers:
+    elif args['command_selected'] not in _command_handlers:
         logger.error('Internal script error - invalid command: %s ',
                      args['command_selected'])
     else:
         try:
-            _command_handlers[command_selected]()
+            _command_handlers[args['command_selected']]()
         except MagicError as e:
             logger.error(str(e))
 
