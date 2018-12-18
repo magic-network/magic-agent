@@ -2,9 +2,9 @@
 
 This repository contains the source code for the following magic-network services:
 
-1. the Radius Gateway Server (to be used in conjunction with a router/AP device)
-1. the Magic Provider Service.
-1. the Magic Privacy Enabler Service.
+1. Magic Gateway Provider (to be used in conjunction with a router/AP device)
+1. Magic Payment Enabler (Service)
+1. Magic Privacy Enabler (Service)
 
 The fastest way to install and run these services is to use docker.  The recommended versions are: 
 1. [docker](https://www.docker.com/get-started) (18.06.1-ce+)
