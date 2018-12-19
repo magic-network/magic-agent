@@ -94,6 +94,7 @@ There are two ways to setup a Magic Agent development environment.
 
 Run from the root directory:
 ```
+python setup.py develop
 pytest
 ``` 
 or alternatively:

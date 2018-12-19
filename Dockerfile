@@ -19,20 +19,20 @@ RUN apt-get update && \
 
 RUN pip install future
 
-RUN mkdir -p /home/pi/gateway
-ADD requirements.txt /home/pi/gateway/requirements.txt
+RUN mkdir -p /home/pi/agent
+ADD requirements.txt /home/pi/agent/requirements.txt
 
-WORKDIR /home/pi/gateway
+WORKDIR /home/pi/agent
 RUN pip3 install -r requirements.txt
 
-ADD magic /home/pi/gateway
-ADD conf/user-config.hjson /home/pi/gateway/gateway/config
+ADD . /home/pi/agent
+RUN pip3 install .
+ADD conf/user-config.hjson /home/pi/agent/gateway/config
 
 ADD magic/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
 ADD magic/resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
 ADD magic/resources/eap /etc/freeradius/3.0/mods-enabled/eap
 ADD magic/resources/clients.conf /etc/freeradius/3.0/clients.conf
-
 
 ADD run.sh /run.sh
 ADD ssl/* /etc/freeradius/3.0/certs/
@@ -46,4 +46,4 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARC
 RUN chmod +x /tini
 
 ENTRYPOINT ["/tini", "--"]
-CMD ["/run.sh"]
+CMD ["/run.sh", "gateway", "start"] # Set default command

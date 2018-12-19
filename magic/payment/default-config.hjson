@@ -1,0 +1,11 @@
+{
+  "admin": {
+    "eth_address": "0x0000000000000000000000000000000000000000"
+    "eth_private_key": "0000000000000000000000000000000000000000"
+    "infura_api_key": "50686e66f0c143dc968ee9ab73a726a8"
+  },
+  "dev": {
+    "mgc_address": "0xc3cbfd0d0f583987ea43d92f7bc2624052ffd6f5"
+    "mgc_faucet_address": "0x7ca9360a59737e5bf3611b1877db8abe292db033"
+  }
+}
