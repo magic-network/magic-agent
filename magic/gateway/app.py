@@ -98,7 +98,7 @@ class MagicGateway():
 
     async def on_user_auth(self, auth_object):
         """
-        Called from the flask server when a user reports in with a GET request to /keepalive
+        Called from the magicradiusd daemon thread upon a successful verification of user's identity.
         :param auth_object: the authorization object for this user.
         """
         if auth_object.address not in self.users.keys():
