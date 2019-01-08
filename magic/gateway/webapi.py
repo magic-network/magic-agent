@@ -30,3 +30,4 @@ class WebApi():
     async def get_users(self, request):
         return web.Response(text=str(len(self.gateway.users.keys())))
 
+

@@ -2,8 +2,8 @@
 from magic.gateway.radius.magicradiusd import RadiusDaemon
 from magic.gateway.webapi import WebApi
 from magic.gateway.radius.radiusreq import RadiusReq
-from magic.gateway.user import User
-from magic.gateway.payment.payment_type import PaymentTypeFactory
+from magic.gateway.entity.user import User
+from magic.gateway.entity.payment_type.payment_type import PaymentTypeFactory
 from magic.configloader import ConfigLoader
 from magic.utils.eth import parse_address
 import logging

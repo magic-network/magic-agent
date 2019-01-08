@@ -14,12 +14,12 @@ class MagicPayment():
 
     def __init__(self):
 
-        logging.basicConfig(level=logging.DEBUG)
+        # logging.basicConfig(level=logging.DEBUG)
 
         self.load_config()
         self.logger = logging.getLogger('MagicPaymentAgent')
         self.loop = asyncio.get_event_loop()
-        self.web_api = WebApi(self.loop)
+        self.api = WebApi(self)
         self.web3_provider = Web3.HTTPProvider("https://rinkeby.infura.io/%s" % self.config['admin']['infura_api_key'])
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
@@ -70,13 +70,15 @@ class MagicPayment():
 
         self.logger.warning("Magic Payment Service started using eth address %s" % self.config['admin']['eth_address'])
 
+
+
         try:
             self.loop.run_until_complete(self.start_main_loop())
         except KeyboardInterrupt:
             self.logger.warning('Shutting down')
 
     async def start_main_loop(self):
-        await self.web_api.run()
+        await self.api.run()
         await self.heartbeat()
 
     async def heartbeat(self):
