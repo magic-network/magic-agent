@@ -1,4 +1,4 @@
-from magic.gateway.authobject import AuthObject
+from magic.gateway.radius.authobject import AuthObject
 from magic.utils.eth import recover, add_hex_prefix
 import logging
 import os

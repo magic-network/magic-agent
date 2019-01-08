@@ -1,7 +1,7 @@
 # Magic Gateway Alpha
-from magic.gateway.magicradiusd import RadiusDaemon
-from magic.gateway.radiusreq import RadiusReq
-from magic.gateway.magicflaskd import FlaskDaemon
+from magic.gateway.radius.magicradiusd import RadiusDaemon
+from magic.gateway.webapi import WebApi
+from magic.gateway.radius.radiusreq import RadiusReq
 from magic.gateway.user import User
 from magic.gateway.payment.payment_type import PaymentTypeFactory
 from magic.configloader import ConfigLoader
@@ -20,7 +20,7 @@ class MagicGateway():
         self.logger = logging.getLogger('MagicGateway')
         self.loop = asyncio.get_event_loop()
         self.radius_daemon = RadiusDaemon(self)
-        self.flask_daemon = FlaskDaemon(self)
+        self.web_api = WebApi(self.loop, self)
         self.payment_type = PaymentTypeFactory.createPaymentType(self.config)
         self.radius_requester = RadiusReq(self.config)
         self.web3_provider = Web3.HTTPProvider("https://rinkeby.infura.io/%s" % self.config['admin']['infura_api_key'])
@@ -44,7 +44,7 @@ class MagicGateway():
         self.address = parse_address(self.config['admin']['eth_address'].lower())
 
         root_folder_path = os.path.dirname(os.path.realpath(__file__)) + "/.."
-        mgc_abi_file = root_folder_path + '/abi/MagicToken.json'
+        mgc_abi_file = root_folder_path + '/resources/MagicToken.json'
 
         with open(mgc_abi_file) as f:
             info_json = json.load(f)
@@ -71,25 +71,23 @@ class MagicGateway():
 
     def run(self):
 
-        # may use these in the future if we want to go to a non-blocking socket
-        # signal.signal(signal.SIGTERM, self.sighandler)
-        # signal.signal(signal.SIGINT, self.sighandler)
-
         self.logger.warning("Magic App Service started using eth address %s" % self.config['admin']['eth_address'])
-
         self.radius_daemon.daemon = True
         self.radius_daemon.start()
-        self.flask_daemon.daemon = True
-        self.flask_daemon.start()
 
         try:
-            self.loop.run_until_complete(self.heartbeat())
+            self.loop.run_until_complete(self.start_main_loop())
         except KeyboardInterrupt:
             self.logger.warning('Shutting down')
+
+    async def start_main_loop(self):
+        await self.web_api.run()
+        await self.heartbeat()
 
     async def heartbeat(self):
 
         # TODO: make this work in batches using asyncio.gather
+        # TODO: Add locking mechanism so long-running user processes don't get triggered twice.
         for key in self.users:
             await self.users[key].on_heartbeat()
 
@@ -113,7 +111,7 @@ class MagicGateway():
 
     async def on_keepalive(self, address, signed_message):
         """
-        Called from the flask server when a user reports in with a GET request to /keepalive
+        Called from the webapi server when a user reports in with a GET request to /keepalive
         :param address: address name
         :param signed_message: message indicating session details sent from client
         """

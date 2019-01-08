@@ -1,24 +1,29 @@
 # Magic Gateway Alpha
-from magic.payment.magicflaskd import FlaskDaemon
 from magic.configloader import ConfigLoader
 from magic.utils.eth import parse_address
+from magic.payment.webapi import WebApi
 import logging
 import signal
 import asyncio
 from web3 import Web3
 import json
 import os
+import logging
 
 class MagicPayment():
 
     def __init__(self):
+
+        logging.basicConfig(level=logging.DEBUG)
+
         self.load_config()
-        self.logger = logging.getLogger('MagicPayment')
+        self.logger = logging.getLogger('MagicPaymentAgent')
         self.loop = asyncio.get_event_loop()
-        self.flask_daemon = FlaskDaemon(self)
+        self.web_api = WebApi(self.loop)
         self.web3_provider = Web3.HTTPProvider("https://rinkeby.infura.io/%s" % self.config['admin']['infura_api_key'])
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
+        self.users = {}
 
     def load_config(self):
 
@@ -29,13 +34,14 @@ class MagicPayment():
         self.config = ConfigLoader()
         self.config.load(default_config_path=default_config_path, user_config_path=user_config_path)
 
+
     def load_eth_contracts(self):
 
         self.mgc_contract_address = parse_address(self.config['dev']['mgc_address'])
         self.address = parse_address(self.config['admin']['eth_address'].lower())
 
         root_folder_path = os.path.dirname(os.path.realpath(__file__)) + "/.."
-        mgc_abi_file = root_folder_path + '/abi/MagicToken.json'
+        mgc_abi_file = root_folder_path + '/resources/MagicToken.json'
 
         with open(mgc_abi_file) as f:
             info_json = json.load(f)
@@ -62,18 +68,24 @@ class MagicPayment():
 
     def run(self):
 
-        self.logger.warning("Magic Payment Enabler started.")
-
-        self.flask_daemon.daemon = True
-        self.flask_daemon.start()
+        self.logger.warning("Magic Payment Service started using eth address %s" % self.config['admin']['eth_address'])
 
         try:
-            self.loop.run_until_complete(self.heartbeat())
+            self.loop.run_until_complete(self.start_main_loop())
         except KeyboardInterrupt:
             self.logger.warning('Shutting down')
 
+    async def start_main_loop(self):
+        await self.web_api.run()
+        await self.heartbeat()
+
     async def heartbeat(self):
+
         # TODO: make this work in batches using asyncio.gather
+        # TODO: Add locking mechanism so long-running user processes don't get triggered twice.
+        for key in self.users:
+            await self.users[key].on_heartbeat()
+
         await asyncio.sleep(1)
         await self.heartbeat()
 
