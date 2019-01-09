@@ -38,8 +38,9 @@ coming soon.*
     ```
     git clone https://github.com/magic-network/magic-agent
     cd magic-agent
+    docker-compose pull
     docker-compose up -d
-    ```
+    ```    
 
 1. Verify the gateway is running:
     ```
