@@ -91,7 +91,7 @@ group and key separated by a underscore character, for example: ADMIN_ACCOUNT, o
     to apply the changes.
 
 # Payment Provider Service
-Not implemented yet.
+Coming soon! In progress.
 
 # Privacy Enabler Service
 Not implemented yet.
