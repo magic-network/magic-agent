@@ -63,8 +63,7 @@ For the gateway to run properly, you'll need to complete the config file found i
 
 ### Advanced Configuration:
 
-The gateway server extends a default config found at `/magic/gateway/config/default-config.hjson`. Currently
-supported options are found in the [Gateway Configuration Reference](https://www.youtube.com/watch?v=dQw4w9WgXcQ). In order 
+The gateway server extends a default config found at `/magic/gateway/config/default-config.hjson`. A reference guide for current supported options is coming soon. In order 
 to extend the default configuration:
 
 1. **Extend with docker-compose.yml environment variables.** To override default config keys, specify the 
