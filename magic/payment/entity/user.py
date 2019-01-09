@@ -10,8 +10,14 @@ class User():
     def to_response(self):
         return {
             "address": self.address,
-            "user_escrow_balance": self.mp_channel.user_escrow_balance
+            "user_balance": self.mp_channel.user_balance,
+            "enabler_balance": self.mp_channel.enabler_balance,
+            "gateway_balances": self.mp_channel.gateway_balance_map,
+            "total_escrowed": self.mp_channel.get_total_escrowed()
         }
 
     async def on_heartbeat(self):
         pass
+
+    def log(self, message):
+        self.logger.warning("(%s) %s" % (self.address, message))

@@ -1,6 +1,7 @@
 from aiohttp import web
 from magic.payment.api.channel_api import add_routes as add_channel_routes
 from magic.payment.api.admin_api import add_routes as add_admin_routes
+from magic.payment.api.general_api import add_routes as add_general_routes
 
 class WebApi():
 
@@ -13,6 +14,7 @@ class WebApi():
         self.routes = web.RouteTableDef()
         self.decorators = Decorators(app)
 
+        add_general_routes(self.routes, self.decorators)
         add_channel_routes(self.routes, self.decorators)
         add_admin_routes(self.routes, self.decorators)
 
