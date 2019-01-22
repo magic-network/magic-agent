@@ -27,9 +27,30 @@ class PaymentChannel():
     def get_total_escrowed(self):
         return self.user_balance + self.enabler_balance + self.get_total_gateway_escrowed()
 
-    async def create(self, escrow_amount):
+    async def airdrop(self, tx_signed):
+        pass
 
-        # Hit contract and transfer tokens from user to payment enabler user escrow balance
+    async def approve_transfer(self, tx_signed):
+        pass
+
+    async def create(self, tx_signed, escrow_amount):
+
+        # For testing purposes, sign transactions here by the user, and have them submitted by the enabler.
+        # self.tmp_user_privkey="8172FFF867B032376449F0D7280F6182DB6B1F1F346D514977B3819C503F6219"
+
+        # First, check if a user has MGC in their wallet. If not, execute a signed request for airdropping!
+        # user_balance = await self.user.get_user_balance_async()
+
+        # receipt = self.app.web3.eth.sendRawTransaction(self.user.build_faucet_request_tx())
+
+        # if (user_balance == 0):
+
+            # self.user.log("you need airdropping!")
+            signed_faucet_tx = self.user.build_faucet_request_tx()
+            receipt = self.web3.eth.sendRawTransaction(signed_faucet_tx.rawTransaction)
+
+        else:
+            self.user.log("you don't need airdropping! You're balance is %s" % user_balance)
 
         # Cache result in enabler: (eventually mysql)
         self.user_balance = escrow_amount

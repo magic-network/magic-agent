@@ -38,17 +38,38 @@ class MagicPayment():
     def load_eth_contracts(self):
 
         self.mgc_contract_address = parse_address(self.config['dev']['mgc_address'])
+        self.mgc_faucet_address = parse_address(self.config['dev']['mgc_faucet_address'])
+        self.mgc_channels_address = parse_address(self.config['dev']['mgc_channels_address'])
         self.address = parse_address(self.config['admin']['eth_address'].lower())
 
         root_folder_path = os.path.dirname(os.path.realpath(__file__)) + "/.."
+
         mgc_abi_file = root_folder_path + '/resources/MagicToken.json'
+        mgcfaucet_abi_file = root_folder_path + '/resources/MagicTokenFaucet.json'
+        mgcchannels_abi_file = root_folder_path + '/resources/MagicChannels.json'
 
         with open(mgc_abi_file) as f:
-            info_json = json.load(f)
+            mgc_abi = json.load(f)
+
+        with open(mgcfaucet_abi_file) as f:
+            mgc_faucet_abi = json.load(f)
+
+        with open(mgcchannels_abi_file) as f:
+            mgc_channels_abi = json.load(f)
 
         self.MgcTokenContract = self.web3.eth.contract(
             address=self.mgc_contract_address,
-            abi=info_json["abi"]
+            abi=mgc_abi["abi"]
+        )
+
+        self.MgcTokenFaucetContract = self.web3.eth.contract(
+            address=self.mgc_faucet_address,
+            abi=mgc_faucet_abi["abi"]
+        )
+
+        self.MagicChannelsContract = self.web3.eth.contract(
+            address=self.mgc_channels_address,
+            abi=mgc_channels_abi["abi"]
         )
 
     def sighandler(self, signum, frame):
@@ -69,8 +90,6 @@ class MagicPayment():
     def run(self):
 
         self.logger.warning("Magic Payment Service started using eth address %s" % self.config['admin']['eth_address'])
-
-
 
         try:
             self.loop.run_until_complete(self.start_main_loop())

@@ -12,13 +12,13 @@ def add_routes(routes, decorators):
         if user is None:
 
             # This should be in a model somewhere...
-            user_id = request.headers['user_id']
-            new_user = User(app, user_id)
-            app.users[user_id] = new_user
+            user_addr = request.headers['user_addr']
+            new_user = User(app, user_addr)
+            app.users[user_addr] = new_user
 
             body = await request.json()
 
-            await new_user.mp_channel.create(body["escrow_amount"])
+            await new_user.mp_channel.create(body["escrow"])
 
             return web.json_response({"success": True, "data": new_user.to_response()}, status=201)
         else:

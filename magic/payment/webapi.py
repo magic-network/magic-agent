@@ -8,6 +8,8 @@ class WebApi():
     def __init__(self, app):
 
         self.loop = app.loop
+        self.config = app.config
+        self.logger = app.logger
         self.web_app = web.Application(loop=self.loop)
         self.web_app['global'] = app
         self.runner = web.AppRunner(self.web_app)
@@ -22,8 +24,12 @@ class WebApi():
 
     async def run(self):
         await self.runner.setup()
-        site = web.TCPSite(self.runner, '127.0.0.1', 8081)
+        site = web.TCPSite(self.runner, self.config['webapi']['host'], self.config['webapi']['port'])
         await site.start()
+        self.log("(WebAPI) New API running at %s:%s" % (self.config['webapi']['host'], self.config['webapi']['port']))
+
+    def log(self, message):
+        self.logger.warning(message)
 
 class Decorators():
     def __init__(self, app):

@@ -5,6 +5,7 @@ class User():
     def __init__(self, app, address):
         self.address = address
         self.logger = app.logger
+        self.app = app
         self.mp_channel = PaymentChannel(self, app)
 
     def to_response(self):
@@ -15,6 +16,40 @@ class User():
             "gateway_balances": self.mp_channel.gateway_balance_map,
             "total_escrowed": self.mp_channel.get_total_escrowed()
         }
+
+    @sync_to_async
+    def get_user_balance_async(self): return self.get_user_balance()
+    def get_user_balance(self):
+        return self.app.MgcTokenContract.functions.balanceOf(self.address).call()
+
+    @sync_to_async
+    def get_user_channel_balance(self): return self.get_user_balance()
+    def get_user_balance(self):
+        return self.app.MgcTokenContract.functions.balanceOf(self.address).call()
+
+    def build_faucet_request_tx(self):
+
+        priv_key = "8172FFF867B032376449F0D7280F6182DB6B1F1F346D514977B3819C503F6219"
+
+        nonce = self.app.web3.eth.getTransactionCount(self.address)
+
+        request_tx = self.app.MgcTokenFaucetContract.functions.request().buildTransaction({
+            'chainId': 4,
+            'gas': 70000,
+            'gasPrice': self.app.web3.toWei('1', 'gwei'),
+            'nonce': nonce
+        })
+
+        signed_request_tx = self.app.web3.eth.account.signTransaction(request_tx, private_key=priv_key)
+
+        return signed_request_tx
+
+
+    def build_approve_channels_tx(self):
+        return "hi"
+
+    def build_open_channel_tx(self):
+        return "hi"
 
     async def on_heartbeat(self):
         pass
