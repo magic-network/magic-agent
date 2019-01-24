@@ -97,6 +97,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     config_logging()
     ra = RadiusAuth(args.sockpath)
-    res = ra.authenticate(args.address, args.password)
+    res = ra.authenticate(args.address, args.password, 123)
     print(res)
 
