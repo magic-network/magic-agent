@@ -97,7 +97,7 @@ class User():
     @sync_to_async
     def disconnect_async(self): return self.disconnect()
     def disconnect(self):
-        self.radius_req.sendDisconnectPacket(self.address, self.radiusSessionId)
+        # self.radius_req.sendDisconnectPacket(self.address, self.radiusSessionId)
         self.connected = False
         self.logger.warning("(%s) Disconnected." % self.address)
 

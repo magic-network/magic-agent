@@ -99,10 +99,10 @@ class MagicGateway():
         Called from the magicradiusd daemon thread upon a successful verification of user's identity.
         :param auth_object: the authorization object for this user.
         """
+
         if auth_object.address not in self.users.keys():
             self.users[auth_object.address] = \
-                User(self, address=auth_object.address,
-                        sessionId=auth_object.sessionId)
+                User(self, auth_object, auth_object.address, auth_object.sessionId)
             return await self.users[auth_object.address].on_auth(True)
         else:
             user = self.users[auth_object.address]

@@ -1,5 +1,5 @@
 from magic.gateway.radius.authobject import AuthObject
-from magic.utils.eth import recover, add_hex_prefix
+from magic.utils.eth import verify_sig
 import logging
 import os
 import socket
@@ -49,17 +49,14 @@ class RadiusDaemon(threading.Thread):
         password_tokens = auth_object.password.split("-")
 
         # Check for all components of password to be present.
-        if len(password_tokens) < 4:
+        if len(password_tokens) < 2:
             return False
 
         timestamp = password_tokens[0]
-        v = password_tokens[1]
-        c = password_tokens[2]
-        s = password_tokens[3]
-        pub_key = add_hex_prefix(recover("auth_" + timestamp, v, c, s))
+        signature = password_tokens[1]
 
         # TODO: Add: Check if timestamp is within a window... Will this require the client to remake a profile?
-        return pub_key == address
+        return verify_sig("auth_" + timestamp, signature, address)
 
     def run(self):
 
