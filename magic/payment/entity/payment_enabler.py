@@ -12,12 +12,13 @@ class PaymentEnabler():
         self.nonce = web3.eth.getTransactionCount(self.addr)
         self.token_contract = token_contract
 
-    def claim_nonce(self):
+    def refresh_nonce(self):
+        self.nonce = self.web3.eth.getTransactionCount(self.addr)
+        return self.nonce
 
-        current_nonce = self.nonce
+    def next_nonce(self):
         self.nonce += 1
-
-        return current_nonce
+        return self.nonce
 
     def send_tx(self, tx):
 
@@ -35,7 +36,7 @@ class PaymentEnabler():
             'chainId': 4,   # Rinkeby for now.
             'gas': 70000,
             'gasPrice': Web3.toWei('1', 'gwei'),
-            'nonce': self.claim_nonce()
+            'nonce': self.refresh_nonce()
         })
 
         token_receipt = self.send_tx(token_transfer_tx)
@@ -45,7 +46,7 @@ class PaymentEnabler():
             'chainId': 4,   # Rinkeby for now.
             'gas': 70000,
             'gasPrice': Web3.toWei('1', 'gwei'),
-            'nonce': self.claim_nonce(),
+            'nonce': self.next_nonce(),
             'value': Web3.toWei(self.airdrop_eth, 'gwei'),
             'to': receiver_addr
         }
