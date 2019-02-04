@@ -1,7 +1,7 @@
 # Magic Gateway Alpha
 from magic.configloader import ConfigLoader
-from magic.utils.eth import parse_address
 from magic.payment.webapi import WebApi
+from magic.payment.entity.payment_enabler import PaymentEnabler
 import logging
 import signal
 import asyncio
@@ -23,6 +23,7 @@ class MagicPayment():
         self.web3_provider = Web3.HTTPProvider("https://rinkeby.infura.io/%s" % self.config['admin']['infura_api_key'])
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
+        self.payment_enabler = PaymentEnabler(self.web3, self.mgc_token_contract, self.config)
         self.users = {}
 
     def load_config(self):
@@ -37,10 +38,10 @@ class MagicPayment():
 
     def load_eth_contracts(self):
 
-        self.mgc_contract_address = parse_address(self.config['dev']['mgc_address'])
-        self.mgc_faucet_address = parse_address(self.config['dev']['mgc_faucet_address'])
-        self.mgc_channels_address = parse_address(self.config['dev']['mgc_channels_address'])
-        self.address = parse_address(self.config['admin']['eth_address'].lower())
+        self.mgc_token_address = Web3.toChecksumAddress(self.config['dev']['mgc_address'])
+        self.mgc_faucet_address = Web3.toChecksumAddress(self.config['dev']['mgc_faucet_address'])
+        self.mgc_channels_address = Web3.toChecksumAddress(self.config['dev']['mgc_channels_address'])
+        self.address = Web3.toChecksumAddress(self.config['admin']['eth_address'].lower())
 
         root_folder_path = os.path.dirname(os.path.realpath(__file__)) + "/.."
 
@@ -57,17 +58,17 @@ class MagicPayment():
         with open(mgcchannels_abi_file) as f:
             mgc_channels_abi = json.load(f)
 
-        self.MgcTokenContract = self.web3.eth.contract(
-            address=self.mgc_contract_address,
+        self.mgc_token_contract = self.web3.eth.contract(
+            address=self.mgc_token_address,
             abi=mgc_abi["abi"]
         )
 
-        self.MgcTokenFaucetContract = self.web3.eth.contract(
+        self.mgc_faucet_contract = self.web3.eth.contract(
             address=self.mgc_faucet_address,
             abi=mgc_faucet_abi["abi"]
         )
 
-        self.MagicChannelsContract = self.web3.eth.contract(
+        self.mgc_channel_contract = self.web3.eth.contract(
             address=self.mgc_channels_address,
             abi=mgc_channels_abi["abi"]
         )

@@ -27,9 +27,6 @@ class PaymentChannel():
     def get_total_escrowed(self):
         return self.user_balance + self.enabler_balance + self.get_total_gateway_escrowed()
 
-    async def airdrop(self, tx_signed):
-        pass
-
     async def approve_transfer(self, tx_signed):
         pass
 
@@ -46,11 +43,11 @@ class PaymentChannel():
         # if (user_balance == 0):
 
             # self.user.log("you need airdropping!")
-            signed_faucet_tx = self.user.build_faucet_request_tx()
-            receipt = self.web3.eth.sendRawTransaction(signed_faucet_tx.rawTransaction)
+        signed_faucet_tx = self.user.build_faucet_request_tx()
+        receipt = self.web3.eth.sendRawTransaction(signed_faucet_tx.rawTransaction)
 
-        else:
-            self.user.log("you don't need airdropping! You're balance is %s" % user_balance)
+        # else:
+        #     self.user.log("you don't need airdropping! You're balance is %s" % user_balance)
 
         # Cache result in enabler: (eventually mysql)
         self.user_balance = escrow_amount

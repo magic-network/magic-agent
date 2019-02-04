@@ -5,7 +5,6 @@ from magic.gateway.radius.radiusreq import RadiusReq
 from magic.gateway.entity.user import User
 from magic.gateway.entity.payment_type.payment_type import PaymentTypeFactory
 from magic.configloader import ConfigLoader
-from magic.utils.eth import parse_address
 import logging
 import signal
 import asyncio
@@ -40,8 +39,8 @@ class MagicGateway():
 
     def load_eth_contracts(self):
 
-        self.mgc_contract_address = parse_address(self.config['dev']['mgc_address'])
-        self.address = parse_address(self.config['admin']['eth_address'].lower())
+        self.mgc_contract_address = Web3.toChecksumAddress(self.config['dev']['mgc_address'])
+        self.address = Web3.toChecksumAddress(self.config['admin']['eth_address'].lower())
 
         root_folder_path = os.path.dirname(os.path.realpath(__file__)) + "/.."
         mgc_abi_file = root_folder_path + '/resources/MagicToken.json'

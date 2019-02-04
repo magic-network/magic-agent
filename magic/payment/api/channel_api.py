@@ -1,7 +1,30 @@
 from aiohttp import web
 from magic.payment.entity.user import User
+from magic.payment.entity.payment_channel import PaymentChannel
+from magic.utils.eth import verify_sig
 
 def add_routes(routes, decorators):
+
+    @routes.post('/airdrop')
+    async def airdrop(request):
+
+        app = request.app['global']
+        body = await request.json()
+        verified = verify_sig("it's me!", body['sig'], body['address'])
+
+        if verified:
+            (token_receipt, eth_receipt) = await app.payment_enabler.airdrop(body['address'])
+            return web.json_response({
+                "success": True,
+                "token_receipt": token_receipt.hex(),
+                "eth_receipt": eth_receipt.hex()
+            }, status=200)
+        else:
+            return web.json_response({
+                "success": False,
+                "error": "Do we know you?? body.sig did not validate."
+            }, status=401)
+
 
     @routes.post('/channel')
     @decorators.get_user

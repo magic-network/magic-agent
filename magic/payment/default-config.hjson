@@ -1,8 +1,10 @@
 {
   "admin": {
-    "eth_address": "0xdf6ce563D547D56cb60FD7211061a30366D16414"
-    "eth_private_key": "0000000000000000000000000000000000000000"
-    "infura_api_key": "50686e66f0c143dc968ee9ab73a726a8"
+    "eth_address": "0x00"
+    "eth_private_key": "0x00"
+    "infura_api_key": "50686e66f0c143dc968ee9ab73a726a8",
+    "airdrop_eth": 10000000,
+    "airdrop_mgc": 100000
   },
   "webapi": {
     "host": "127.0.0.1",
