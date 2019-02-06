@@ -8,7 +8,7 @@
   },
   "webapi": {
     "host": "127.0.0.1",
-    "port": 5000
+    "port": 5001
   },
   "dev": {
     "mgc_address": "0xc3cbfd0d0f583987ea43d92f7bc2624052ffd6f5"

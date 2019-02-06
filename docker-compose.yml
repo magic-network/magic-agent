@@ -18,5 +18,5 @@ services:
 #    image: magicnetwork/magic-agent
 #    network_mode: "host"
 #    ports:
-#    - "8080:5000"
+#    - "8080:5001"
 #    command: ["/run.sh", "payment", "start"]
