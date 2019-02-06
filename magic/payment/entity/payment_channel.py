@@ -13,65 +13,32 @@ class PaymentChannel():
         self.enabler_balance = 0  # The amount that the enabler has received.
         self.gateway_balance_map = {}
 
-    def activate(self, approved_balance):
+    def open(self, approved_balance):
+        """Channel has been deemed appropriate to open
+
+        Args:
+            approved_balance: Amount of MGC escrowed in this channel.
+
+        """
         if approved_balance > 0:
             self.activated = True
             self.user_balance = approved_balance
 
-    def is_open(self):
-        return self.user_escrow_balance > 0
-
-    def get_total_gateway_escrowed(self):
-        total_balance = 0
-
-        for key in self.gateway_balance_map:
-            total_balance += self.gateway_balance_map[key]
-
-        return total_balance
-
-    def get_total_escrowed(self):
-        return self.user_balance + self.enabler_balance + self.get_total_gateway_escrowed()
-
-
-    async def approve_transfer(self, tx_signed):
-        pass
-
-    async def create(self, tx_signed, escrow_amount):
-
-        # For testing purposes, sign transactions here by the user, and have them submitted by the enabler.
-
-        # First, check if a user has MGC in their wallet. If not, execute a signed request for airdropping!
-        # user_balance = await self.user.get_user_balance_async()
-
-        # receipt = self.app.web3.eth.sendRawTransaction(self.user.build_faucet_request_tx())
-
-        # if (user_balance == 0):
-
-            # self.user.log("you need airdropping!")
-        signed_faucet_tx = self.user.build_faucet_request_tx()
-        receipt = self.web3.eth.sendRawTransaction(signed_faucet_tx.rawTransaction)
-
-        # else:
-        #     self.user.log("you don't need airdropping! You're balance is %s" % user_balance)
-
-        # Cache result in enabler: (eventually mysql)
-        self.user_balance = escrow_amount
-        self.user_desired_balance = escrow_amount
-
-        self.user.log("Payment channel opened. Total tokens currently escrowed: %s" % escrow_amount)
-
-
     @sync_to_async
     def payment_async(self, gateway_payments): return self.payment(gateway_payments)
     def payment(self, gateway_payments):
+        """Process a payment
 
-        # gateway_payments is like this:
-        # [
-        #     {
-        #         "gateway_addr": "123",
-        #         "amount": 123
-        #     }
-        # ]
+        Args:
+            gateway_payments: Object containing gateway addresses and tokens to send to them.
+                eg. [{
+                     "gateway_addr": "123",
+                     "amount": 123
+                 }]
+
+        Returns:
+            Tuple: (Boolean success, String failure_reason)
+        """
 
         total_amount = 0
 
@@ -103,6 +70,8 @@ class PaymentChannel():
     @sync_to_async
     def topoff(self, amount=None): self.settle(amount=None)
     def topoff(self, amount=None):
+        """Add more tokens to a user balance. Should be called after a signature verified topup action has occured.
+        """
 
         # Hit contract and transfer tokens from user to payment enabler user escrow balance
         if (amount):
@@ -112,9 +81,3 @@ class PaymentChannel():
             topoff_amount = self.user_desired_balance - self.user_balance
             self.user_balance += topoff_amount
             self.user.log("User added balance: %s " % topoff_amount)
-
-    @sync_to_async
-    def settle_async(self): self.settle()
-    def settle(self):
-
-        self.user.log("user micropayment settling.")

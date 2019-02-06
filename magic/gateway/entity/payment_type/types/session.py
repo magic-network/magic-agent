@@ -46,7 +46,7 @@ class SessionPaymentType(PaymentTypeInterface):
         if session_expired and cost_to_open > 0:
             success = await user.payment_async(cost_to_open)
             user.start_session()
-            user.log("Charged %s token to open a new session ... User escrow balance: %s" % cost_to_open)
+            user.log("Charged %s token to open a new session." % cost_to_open)
             return success
         else:
             user.log("User reauthed. Payment session continuing.")
