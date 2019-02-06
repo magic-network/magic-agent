@@ -13,11 +13,17 @@ class SessionPaymentType(PaymentTypeInterface):
         cost_to_open = self.config['billing']['cost_to_open']
 
         if cost_to_open > 0:
-            await user.mp_channel.payment_async(cost_to_open)
-            user.start_session()
-            user.log("Charged %s token to open a new session ... User escrow balance: %s" % (cost_to_open, user.mp_channel.user_escrow_balance))
+            success = await user.payment_async(cost_to_open)
+
+            if success:
+                user.start_session()
+                user.log("Charged %s token to open a new session ... User balance: %s" % (cost_to_open, user.token_balance))
+
+            return success
         else:
+
             user.start_session()
+            return True
 
 
     async def user_reauth(self, user):
@@ -37,29 +43,29 @@ class SessionPaymentType(PaymentTypeInterface):
 
 
     async def heartbeat(self, user):
-
-        now = time.time()
-        session_elapsed = now - user.session_started_at
-        session_duration = self.config["billing"]["duration"]
-        charge = self.token_per_second
-
-        if session_elapsed < session_duration:
-            # During the active payment session... bill continually (pro rata)
-
-            (success, reason) = await user.mp_channel.payment_async(charge)
-
-            user.log("Charged %s ... User escrow balance: %s" % (charge, user.mp_channel.user_escrow_balance))
-
-            if not success:
-                user.log(reason)
-                user.end_session()
-                await user.mp_channel.provider_payout_async()
-                await user.disconnect_async()
-
-        else:
-            user.end_session()
-            await user.disconnect_async()
-            await user.mp_channel.provider_payout_async()
+        pass
+        # now = time.time()
+        # session_elapsed = now - user.session_started_at
+        # session_duration = self.config["billing"]["duration"]
+        # charge = self.token_per_second
+        #
+        # if session_elapsed < session_duration:
+        #     # During the active payment session... bill continually (pro rata)
+        #
+        #     (success, reason) = await user.mp_channel.payment_async(charge)
+        #
+        #     user.log("Charged %s ... User escrow balance: %s" % (charge, user.mp_channel.user_escrow_balance))
+        #
+        #     if not success:
+        #         user.log(reason)
+        #         user.end_session()
+        #         await user.mp_channel.provider_payout_async()
+        #         await user.disconnect_async()
+        #
+        # else:
+        #     user.end_session()
+        #     await user.disconnect_async()
+        #     await user.mp_channel.provider_payout_async()
 
 
     async def timed_out(self, user):

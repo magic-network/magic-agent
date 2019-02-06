@@ -51,12 +51,23 @@ def add_routes(routes, decorators):
     @decorators.get_user
     async def get(request, user):
 
-        if user is not None:
-            return web.json_response({"success": True, "data": user.to_response()}, status=200)
-        else:
-            return web.json_response({"success": False}, status=404)
+        app = request.app['global']
 
-    @routes.post('/channel/pay')
+        if user is not None:
+            return web.json_response({"success": True, "channel_id": 123}, status=200)
+        else:
+
+            user_addr = request.headers['user_addr']
+            new_user = User(app, user_addr)
+            app.users[user_addr] = new_user
+            await new_user.open_channel_async()
+
+            if new_user.mp_channel.activated:
+                return web.json_response({"success": True, "user_balance": new_user.mp_channel.user_balance}, status=200)
+            else:
+                return web.json_response({"success": False}, status=200)
+
+    @routes.post('/channel/payment')
     @decorators.get_user
     async def pay(request, user):
 

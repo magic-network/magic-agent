@@ -3,7 +3,7 @@
     "eth_address": "0x00"
     "eth_private_key": "0x00"
     "infura_api_key": "50686e66f0c143dc968ee9ab73a726a8",
-    "airdrop_eth": 10000000,
+    "airdrop_eth": 1000000000000000,
     "airdrop_mgc": 100000
   },
   "webapi": {

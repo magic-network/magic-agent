@@ -18,6 +18,13 @@ class User():
         }
 
     @sync_to_async
+    def open_channel_async(self): return self.open_channel()
+    def open_channel(self):
+        # check blockchain for opened channel.
+        balance = self.app.mgc_channel_contract.functions.myUserBalance(self.app.payment_enabler.addr).call({'from': self.address})
+        self.mp_channel.activate(balance)
+
+    @sync_to_async
     def get_user_balance_async(self): return self.get_user_balance()
     def get_user_balance(self):
         return self.app.MgcTokenContract.functions.balanceOf(self.address).call()

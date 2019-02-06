@@ -16,6 +16,8 @@ class MagicGateway():
 
     def __init__(self):
         self.load_config()
+        self.addr = Web3.toChecksumAddress(self.config['admin']['eth_address'])
+        self.key = self.config['admin']['eth_private_key']
         self.logger = logging.getLogger('MagicGateway')
         self.loop = asyncio.get_event_loop()
         self.radius_daemon = RadiusDaemon(self)
@@ -70,7 +72,7 @@ class MagicGateway():
 
     def run(self):
 
-        self.logger.warning("Magic App Service started using eth address %s" % self.config['admin']['eth_address'])
+        self.logger.warning("Magic Gateway Service started using eth address %s" % self.config['admin']['eth_address'])
         self.radius_daemon.daemon = True
         self.radius_daemon.start()
 

@@ -41,7 +41,7 @@ class Decorators():
             request = args[0]
 
             try:
-                kwargs['user'] = self.app.users[request.headers['user_id']]
+                kwargs['user'] = self.app.users[request.headers['user_addr']]
             except KeyError:
                 kwargs['user'] = None
 

@@ -15,7 +15,8 @@ class WebApi():
 
     async def run(self):
         await self.runner.setup()
-        site = web.TCPSite(self.runner, '127.0.0.1', 8080)
+        site = web.TCPSite(self.runner, self.gateway.config['webapi']['host'], self.gateway.config['webapi']['port'])
+        self.gateway.logger.warning("(WebAPI) Web api running at %s:%s" % (self.gateway.config['webapi']['host'], self.gateway.config['webapi']['port']))
         await site.start()
 
     async def keepalive(self, request):

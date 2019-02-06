@@ -9,6 +9,10 @@
     "router_address":"192.168.1.1"
     "radius_secret":"magicsecret"       # TODO randomly generate this
   },
+  "webapi": {
+    "host": "127.0.0.1",
+    "port": 8080
+  },
   "billing": {
 
   # Example of a session_based AP

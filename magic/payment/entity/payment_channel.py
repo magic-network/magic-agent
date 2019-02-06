@@ -13,6 +13,11 @@ class PaymentChannel():
         self.enabler_balance = 0  # The amount that the enabler has received.
         self.gateway_balance_map = {}
 
+    def activate(self, approved_balance):
+        if approved_balance > 0:
+            self.activated = True
+            self.user_balance = approved_balance
+
     def is_open(self):
         return self.user_escrow_balance > 0
 
@@ -26,6 +31,7 @@ class PaymentChannel():
 
     def get_total_escrowed(self):
         return self.user_balance + self.enabler_balance + self.get_total_gateway_escrowed()
+
 
     async def approve_transfer(self, tx_signed):
         pass

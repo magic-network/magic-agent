@@ -47,7 +47,7 @@ class PaymentEnabler():
             'gas': 70000,
             'gasPrice': Web3.toWei('1', 'gwei'),
             'nonce': self.next_nonce(),
-            'value': Web3.toWei(self.airdrop_eth, 'gwei'),
+            'value': self.airdrop_eth,
             'to': receiver_addr
         }
 
