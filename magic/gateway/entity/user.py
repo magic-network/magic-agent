@@ -1,6 +1,4 @@
 import time
-import web3
-from web3 import Web3
 from magic.utils.async_tools import sync_to_async
 import aiohttp
 
