@@ -54,7 +54,7 @@ def add_routes(routes, decorators):
         app = request.app['global']
 
         if user is not None:
-            return web.json_response({"success": True, "channel_id": 123}, status=200)
+            return web.json_response({"success": True, "user_balance": user.mp_channel.user_balance}, status=200)
         else:
 
             user_addr = request.headers['user_addr']

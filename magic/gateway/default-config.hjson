@@ -1,8 +1,9 @@
 {
   "admin": {
     "eth_address": "0x0000000000000000000000000000000000000000"
-    "eth_private_key": "0000000000000000000000000000000000000000"
+    "eth_private_key": "0000000000000000000000000000s000000000000"
     "infura_api_key": "50686e66f0c143dc968ee9ab73a726a8"
+    "default_penabler_url": "http://127.0.0.1:5000"
     "user_min_balance": 0
     "whitelist": [ "0x001", "0x002", "0x003" ]
     "blacklist": [ "0x004", "0x005", "0x006" ]
@@ -18,10 +19,10 @@
   # Example of a session_based AP
     "type": "session"
     "duration": 20                       # session length in seconds.
-    "charge": 5000                       # tokens per session
+    "charge": 100                        # tokens per session
     "cost_to_open": 100                  # additional cost to start a new session
     "max_bytes": 1000000000
-    "prorata": true                     # if false, charge will be applied regardless of time used
+    "prorata": true                      # if false, charge will be applied regardless of time used
 
   # Example of a free AP
   # "type": "free",

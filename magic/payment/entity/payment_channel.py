@@ -39,7 +39,6 @@ class PaymentChannel():
     async def create(self, tx_signed, escrow_amount):
 
         # For testing purposes, sign transactions here by the user, and have them submitted by the enabler.
-        # self.tmp_user_privkey="8172FFF867B032376449F0D7280F6182DB6B1F1F346D514977B3819C503F6219"
 
         # First, check if a user has MGC in their wallet. If not, execute a signed request for airdropping!
         # user_balance = await self.user.get_user_balance_async()
