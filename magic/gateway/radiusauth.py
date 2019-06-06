@@ -38,16 +38,26 @@ class RadiusAuth(object):
         sess = ''
         for param in p:
             name = param[0]
+	    # We have to check the username and password because
+	    # there are arbitray character limits in iOS that force
+	    # us to switch the fields 
             if name == 'User-Name':
-                address = param[1]
+		if '-' in param[1]:
+		    password = param[1]
+		else:
+	            address = param[1]
             elif name == 'User-Password':
-                password = param[1]
+		if '-' in param[1]:
+                    password = param[1]
+		else:
+		    address = param[1]
             elif name == 'Acct-Session-Id':
                 sess = param[1]
         if not address or not password:
             self.logger.warning('No address or password sent')
             result = False
         else:
+	    self.logger.info("Attempting to authenticate with username: {0} and password {1}".format(address, password))
             result = self.authenticate(address, password, sess)
         return result
 
