@@ -13,5 +13,5 @@ install:
   - pip3 install pylint
   - pip3 install .
 script: 
-  - find -name "*.py" | xargs pylint
+  - pylint ./magic
   - pytest
