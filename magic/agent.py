@@ -10,12 +10,10 @@ from magic.utils.eth import parse_address
 from web3 import Web3
 
 
-class MagicPayment():
+class MagicAgent():
 
     def __init__(self):
-        self.type = "payment_enabler"
-        self.load_config()
-        self.logger = logging.getLogger('MagicPayment')
+        self.logger = logging.getLogger('MagicAgent')
         self.loop = asyncio.get_event_loop()
         self.flask_daemon = FlaskDaemon(self)
         self.web3_provider = Web3.HTTPProvider(
@@ -25,9 +23,7 @@ class MagicPayment():
         self.load_eth_contracts()
         self.shutdown = False
 
-    def load_config(self):
-
-        root_folder_path = os.path.dirname(os.path.realpath(__file__))
+    def load_config(self, root_folder_path):
         default_config_path = root_folder_path + '/default-config.hjson'
         user_config_path = root_folder_path + '/user-config.hjson'
 
@@ -43,7 +39,7 @@ class MagicPayment():
         self.address = parse_address(
             self.config['admin']['eth_address'].lower())
 
-        root_folder_path = os.path.dirname(os.path.realpath(__file__)) + "/.."
+        root_folder_path = os.path.dirname(os.path.realpath(__file__))
         mgc_abi_file = root_folder_path + '/abi/MagicToken.json'
 
         with open(mgc_abi_file) as f:
@@ -70,9 +66,6 @@ class MagicPayment():
             self.logger.warning('Signal %d not handled', signum)
 
     def run(self):
-
-        self.logger.warning("Magic Payment Enabler started.")
-
         self.flask_daemon.daemon = True
         self.flask_daemon.start()
 
@@ -85,9 +78,3 @@ class MagicPayment():
         # TODO: make this work in batches using asyncio.gather
         await asyncio.sleep(1)
         await self.heartbeat()
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    mp = MagicPayment()
-    asyncio.run(mp.run(), debug=True)
