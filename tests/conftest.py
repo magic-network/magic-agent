@@ -1,15 +1,13 @@
 import pytest
-from magic.payment.app import MagicPayment
-from magic.gateway.app import MagicGateway
+from magic.payment.agent import MagicPayment
+from magic.gateway.agent import MagicGateway
 
 
 @pytest.fixture(scope='session', autouse=True)
 def gateway():
-    gateway = MagicGateway()
-    return gateway
+    return MagicGateway()
 
 
 @pytest.fixture(scope='session', autouse=True)
 def payment_enabler():
-    payment_enabler = MagicPayment()
-    return payment_enabler
+    return MagicPayment()
