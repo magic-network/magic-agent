@@ -6,10 +6,10 @@ import json
 import os
 from magic.gateway.magicradiusd import RadiusDaemon
 from magic.gateway.radiusreq import RadiusReq
-from magic.gateway.magicflaskd import FlaskDaemon
+from magic.utils.magicflaskd import FlaskDaemon
 from magic.gateway.user import User
 from magic.gateway.payment.payment_type import PaymentTypeFactory
-from magic.configloader import ConfigLoader
+from magic.utils.configloader import ConfigLoader
 from magic.utils.eth import parse_address
 from web3 import Web3
 
@@ -22,7 +22,10 @@ class MagicGateway():
         self.loop = asyncio.get_event_loop()
         self.radius_daemon = RadiusDaemon(self)
         self.flask_daemon = FlaskDaemon(self)
-        self.payment_type = PaymentTypeFactory.createPaymentType(self.config)
+        try:
+            self.payment_type = PaymentTypeFactory.createPaymentType(self.config)
+        except Exception as e:
+            self.logger.warning(e)
         self.radius_requester = RadiusReq(self.config)
         self.web3_provider = Web3.HTTPProvider(
             "https://rinkeby.infura.io/%s" %
@@ -30,6 +33,7 @@ class MagicGateway():
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
         self.users = {}
+        self.type = "gateway"
         self.shutdown = False
 
     def load_config(self):

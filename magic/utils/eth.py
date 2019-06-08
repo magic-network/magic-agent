@@ -1,3 +1,4 @@
+import os
 from ethereum.utils import sha3
 from web3 import Web3
 from web3.auto import w3

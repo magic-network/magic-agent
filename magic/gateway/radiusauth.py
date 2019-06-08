@@ -3,11 +3,10 @@
 # credentials are correct
 
 import argparse
-import authobject
 import logging
-import radiusd
 import socket
-
+import radiusd
+import authobject
 
 class RadiusAuth(object):
     def __init__(self, socket):
@@ -58,9 +57,6 @@ class RadiusAuth(object):
             self.logger.warning('No address or password sent')
             result = False
         else:
-            self.logger.info(
-                "Attempting to authenticate with username: {0} and password {1}".format(
-                    address, password))
             result = self.authenticate(address, password, sess)
         return result
 

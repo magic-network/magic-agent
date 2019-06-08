@@ -1,8 +1,8 @@
+import logging
+import os
 from pyrad.client import Client
 from pyrad import dictionary
 from pyrad import packet
-import logging
-import os
 
 
 class RadiusReq(object):

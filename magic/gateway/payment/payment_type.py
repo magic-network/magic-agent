@@ -12,5 +12,4 @@ class PaymentTypeFactory:
             return SessionPaymentType(config)
         else:
             message = "Payment type: %s not supported yet" % type
-            gateway.logger.warning(message)
             raise Exception(message)

@@ -1,14 +1,14 @@
 import threading
-from flask import Flask, Response, request
 import asyncio
+from flask import Flask, Response, request
 
 
 class FlaskDaemon(threading.Thread):
 
-    def __init__(self, gateway):
+    def __init__(self, agent):
         threading.Thread.__init__(self)
-        self.gateway = gateway
-        self.app = Flask("payment_enabler")
+        self.agent = agent
+        self.app = Flask(agent.type)
 
     def run(self):
         self.setup_routes()
@@ -20,13 +20,13 @@ class FlaskDaemon(threading.Thread):
         signed_message = request.args.get('s')
 
         asyncio.run_coroutine_threadsafe(
-            self.gateway.on_keepalive(
-                address, signed_message), self.gateway.loop)
+            self.agent.on_keepalive(
+                address, signed_message), self.agent.loop)
 
         return Response(status=200)
 
     def get_users(self):
-        return str(len(self.gateway.users.keys()))
+        return str(len(self.agent.users.keys()))
 
     def setup_routes(self):
         self.add_endpoint(

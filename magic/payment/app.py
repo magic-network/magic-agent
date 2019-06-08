@@ -4,8 +4,8 @@ import signal
 import asyncio
 import json
 import os
-from magic.payment.magicflaskd import FlaskDaemon
-from magic.configloader import ConfigLoader
+from magic.utils.magicflaskd import FlaskDaemon
+from magic.utils.configloader import ConfigLoader
 from magic.utils.eth import parse_address
 from web3 import Web3
 
@@ -23,6 +23,7 @@ class MagicPayment():
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
         self.shutdown = False
+        self.type = "payment_enabler"
 
     def load_config(self):
 

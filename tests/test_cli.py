@@ -6,9 +6,9 @@
 #
 # LICENSE: Distributed under the terms of the MIT License
 
-import psutil
 import os
 from subprocess import PIPE
+import psutil
 
 
 def test_version():
