@@ -5,7 +5,7 @@ from pyrad import dictionary
 from pyrad import packet
 
 
-class RadiusReq(object):
+class RadiusReq():
     def __init__(self, config):
         self.logger = logging.getLogger(__name__)
         dictfile = os.path.dirname(
@@ -15,7 +15,7 @@ class RadiusReq(object):
             secret=config['admin']['radius_secret'].encode('ascii'),
             dict=dictionary.Dictionary(dictfile))
 
-    def sendDisconnectPacket(self, user, session):
+    def send_disconnect_packet(self, user, session):
         params = {
             'User_Name': user,
             'Acct_Session_Id': session

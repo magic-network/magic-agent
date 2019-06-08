@@ -8,7 +8,7 @@ import socket
 import radiusd
 import authobject
 
-class RadiusAuth(object):
+class RadiusAuth():
     def __init__(self, socket):
         self.sockpath = socket
         self.logger = logging.getLogger('RadiusAuth')
