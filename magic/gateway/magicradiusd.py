@@ -6,6 +6,7 @@ import socket
 import threading
 import asyncio
 
+
 class RadiusDaemon(threading.Thread):
 
     def __init__(self, gateway):
@@ -14,7 +15,6 @@ class RadiusDaemon(threading.Thread):
         self.config = gateway.config
         self.shutdown = False
         threading.Thread.__init__(self)
-
 
     def read_data_from_conn(self, conn):
         buf = bytes()
@@ -31,7 +31,6 @@ class RadiusDaemon(threading.Thread):
 
     def gen_auth_response(self, auth_succeed):
         return b'\x01' if auth_succeed else b'\x00'
-
 
     def static_auth(self, auth_object):
         return (auth_object.address == self.config["dev"]['address']
@@ -55,7 +54,8 @@ class RadiusDaemon(threading.Thread):
         timestamp = password_tokens[0]
         signature = password_tokens[1]
 
-        # TODO: Add: Check if timestamp is within a window... Will this require the client to remake a profile?
+        # TODO: Add: Check if timestamp is within a window... Will this require
+        # the client to remake a profile?
         return verify_sig("auth_" + timestamp, signature, address)
 
     def run(self):
@@ -95,8 +95,10 @@ class RadiusDaemon(threading.Thread):
             identity_verified = self.check_identity(ao)
 
             if identity_verified:
-                success_future = asyncio.run_coroutine_threadsafe(self.gateway.on_user_auth(ao), self.gateway.loop)
-                # TODO: Refactor: This potentially blocks the thread for other users until the result is returned.
+                success_future = asyncio.run_coroutine_threadsafe(
+                    self.gateway.on_user_auth(ao), self.gateway.loop)
+                # TODO: Refactor: This potentially blocks the thread for other
+                # users until the result is returned.
                 validated = success_future.result()
                 conn.send(self.gen_auth_response(validated))
             else:

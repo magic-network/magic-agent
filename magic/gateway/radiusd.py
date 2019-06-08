@@ -33,10 +33,10 @@ L_PROXY = 5
 L_CONS = 128
 
 # log function
+
+
 def radlog(level, msg):
     import sys
     sys.stdout.write(msg + '\n')
 
     level = level
-
-

@@ -8,6 +8,7 @@ def gateway():
     gateway = MagicGateway()
     return gateway
 
+
 @pytest.fixture(scope='session', autouse=True)
 def payment_enabler():
     payment_enabler = MagicPayment()

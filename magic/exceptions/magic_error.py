@@ -6,7 +6,8 @@
 #
 # LICENSE: Distributed under the terms of the MIT License
 #
-# MagicError.py - This file contains a list of custom Exception implementations.
+# MagicError.py - This file contains a list of custom Exception
+# implementations.
 
 
 class MagicError(Exception):

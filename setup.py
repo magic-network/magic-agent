@@ -17,9 +17,9 @@ setup(
     author_email='support@hologram.io',
     packages=find_packages(),
     include_package_data=True,
-    install_requires = open('requirements.txt').read().split(),
+    install_requires=open('requirements.txt').read().split(),
     setup_requires=["pytest-runner"],
-    tests_require = ["pytest"],
+    tests_require=["pytest"],
     scripts=['magic/bin/magic-network'],
     license='MIT'
 )

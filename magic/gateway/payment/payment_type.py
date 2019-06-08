@@ -1,5 +1,6 @@
 from magic.gateway.payment.types.session import SessionPaymentType
 
+
 class PaymentTypeFactory:
 
     @staticmethod
@@ -13,6 +14,3 @@ class PaymentTypeFactory:
             message = "Payment type: %s not supported yet" % type
             gateway.logger.warning(message)
             raise Exception(message)
-
-
-

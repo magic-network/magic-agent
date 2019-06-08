@@ -13,6 +13,7 @@ from web3 import Web3
 import json
 import os
 
+
 class MagicGateway():
 
     def __init__(self):
@@ -24,15 +25,19 @@ class MagicGateway():
         self.flask_daemon = FlaskDaemon(self)
         self.payment_type = PaymentTypeFactory.createPaymentType(self.config)
         self.radius_requester = RadiusReq(self.config)
-        self.web3_provider = Web3.HTTPProvider("https://rinkeby.infura.io/%s" % self.config['admin']['infura_api_key'])
+        self.web3_provider = Web3.HTTPProvider(
+            "https://rinkeby.infura.io/%s" %
+            self.config['admin']['infura_api_key'])
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
         self.users = {}
 
     def load_eth_contracts(self):
 
-        self.mgc_contract_address = parse_address(self.config['dev']['mgc_address'])
-        self.address = parse_address(self.config['admin']['eth_address'].lower())
+        self.mgc_contract_address = parse_address(
+            self.config['dev']['mgc_address'])
+        self.address = parse_address(
+            self.config['admin']['eth_address'].lower())
 
         root_folder_path = os.path.dirname(os.path.realpath(__file__)) + "/.."
         mgc_abi_file = root_folder_path + '/abi/MagicToken.json'
@@ -66,7 +71,9 @@ class MagicGateway():
         # signal.signal(signal.SIGTERM, self.sighandler)
         # signal.signal(signal.SIGINT, self.sighandler)
 
-        self.logger.warning("Magic App Service started using eth address %s" % self.config['admin']['eth_address'])
+        self.logger.warning(
+            "Magic App Service started using eth address %s" %
+            self.config['admin']['eth_address'])
 
         self.radius_daemon.daemon = True
         self.radius_daemon.start()
@@ -95,7 +102,7 @@ class MagicGateway():
         if auth_object.address not in self.users.keys():
             self.users[auth_object.address] = \
                 User(self, address=auth_object.address,
-                        sessionId=auth_object.sessionId)
+                     sessionId=auth_object.sessionId)
             return await self.users[auth_object.address].on_auth(True)
         else:
             user = self.users[auth_object.address]
@@ -112,13 +119,12 @@ class MagicGateway():
             user = self.users[address]
             user.on_keepalive(address, signed_message)
         except KeyError:
-            self.logger.warning("Unknown user attempting keepalive. (%s)" % address)
+            self.logger.warning(
+                "Unknown user attempting keepalive. (%s)" %
+                address)
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     mg = MagicGateway()
     asyncio.run(mg.run(), debug=True)
-
-
-

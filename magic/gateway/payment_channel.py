@@ -3,6 +3,7 @@ from magic.utils.async_tools import sync_to_async
 
 ESCROW_AMOUNT = 10000
 
+
 class PaymentChannel():
 
     def __init__(self, user, gateway):
@@ -12,7 +13,6 @@ class PaymentChannel():
         self.provider_escrow_balance = 0
         self.user_escrow_balance = 0
         self.id = "hologram"
-
 
     def is_open(self):
         return self.user_escrow_balance > 0
@@ -29,8 +29,9 @@ class PaymentChannel():
             self.user_escrow_balance += ESCROW_AMOUNT
             self.user.token_balance -= ESCROW_AMOUNT
 
-        self.user.log("Payment channel opened. Tokens escrowed: %s" % (self.user_escrow_balance))
-
+        self.user.log(
+            "Payment channel opened. Tokens escrowed: %s" %
+            (self.user_escrow_balance))
 
     @sync_to_async
     def payment_async(self, payment): return self.payment(payment)
@@ -46,7 +47,6 @@ class PaymentChannel():
         else:
             return (False, "Not enough funds escrowed to continue micropayments.")
 
-
     @sync_to_async
     def settle_async(self): self.settle()
     def settle(self):
@@ -57,8 +57,9 @@ class PaymentChannel():
         self.user.token_balance += self.user_escrow_balance
         self.user_escrow_balance = 0
 
-        self.user.log("user micropayment settling. User new total balance: %s " % self.user.token_balance)
-
+        self.user.log(
+            "user micropayment settling. User new total balance: %s " %
+            self.user.token_balance)
 
     @sync_to_async
     def provider_payout_async(self): self.provider_payout()
@@ -67,8 +68,7 @@ class PaymentChannel():
         # self.gateway.MgcTokenContract.functions.transfer(self.gateway.address, self.provider_escrow_balance).transact()
 
         self.provider_balance += self.provider_escrow_balance
-        self.user.log("provider channel payout: %s New balance: %s" % (self.provider_escrow_balance, self.provider_balance))
+        self.user.log(
+            "provider channel payout: %s New balance: %s" %
+            (self.provider_escrow_balance, self.provider_balance))
         self.provider_escrow_balance = 0
-
-
-

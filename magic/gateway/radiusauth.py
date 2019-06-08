@@ -8,6 +8,7 @@ import logging
 import radiusd
 import socket
 
+
 class RadiusAuth(object):
     def __init__(self, socket):
         self.sockpath = socket
@@ -38,29 +39,30 @@ class RadiusAuth(object):
         sess = ''
         for param in p:
             name = param[0]
-	    # We have to check the username and password because
-	    # there are arbitray character limits in iOS that force
-	    # us to switch the fields 
+            # We have to check the username and password because
+            # there are arbitray character limits in iOS that force
+            # us to switch the fields
             if name == 'User-Name':
-		if '-' in param[1]:
-		    password = param[1]
-		else:
-	            address = param[1]
-            elif name == 'User-Password':
-		if '-' in param[1]:
+                if '-' in param[1]:
                     password = param[1]
-		else:
-		    address = param[1]
+                else:
+                    address = param[1]
+            elif name == 'User-Password':
+                if '-' in param[1]:
+                    password = param[1]
+                else:
+                    address = param[1]
             elif name == 'Acct-Session-Id':
                 sess = param[1]
         if not address or not password:
             self.logger.warning('No address or password sent')
             result = False
         else:
-	    self.logger.info("Attempting to authenticate with username: {0} and password {1}".format(address, password))
+            self.logger.info(
+                "Attempting to authenticate with username: {0} and password {1}".format(
+                    address, password))
             result = self.authenticate(address, password, sess)
         return result
-
 
 
 # Functions used by FreeRadius
@@ -72,9 +74,9 @@ def authorize(p):
     ra.handle_radius_authorize(p)
     return (radiusd.RLM_MODULE_OK,
             tuple(),
-            ( 
+            (
                 ('Auth-Type', 'magic'),
-            ) )
+            ))
 
 
 def authenticate(p):
@@ -86,13 +88,12 @@ def authenticate(p):
         result = ra.handle_radius_authenticate(p)
     except Exception as e:
         msg = repr(e)
-        radiusd.radlog(radiusd.L_ERR, '*** ERROR:'+msg)
+        radiusd.radlog(radiusd.L_ERR, '*** ERROR:' + msg)
         return radiusd.RLM_MODULE_FAIL
     if result:
         return radiusd.RLM_MODULE_OK
     return radiusd.RLM_MODULE_REJECT
-#End FreeRadius functions
-
+# End FreeRadius functions
 
 
 def config_logging():
@@ -109,4 +110,3 @@ if __name__ == '__main__':
     ra = RadiusAuth(args.sockpath)
     res = ra.authenticate(args.address, args.password, 123)
     print(res)
-

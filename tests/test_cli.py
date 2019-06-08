@@ -10,6 +10,7 @@ import psutil
 import os
 from subprocess import PIPE
 
+
 def test_version():
 
     verfile = os.path.dirname(__file__) + '/../version.txt'
