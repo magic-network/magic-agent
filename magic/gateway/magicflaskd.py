@@ -1,6 +1,6 @@
 import threading
-from flask import Flask, Response, request
 import asyncio
+from flask import Flask, Response, request
 
 
 class FlaskDaemon(threading.Thread):

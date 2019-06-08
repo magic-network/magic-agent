@@ -1,11 +1,12 @@
 import os
-import hjson
 import collections
+import hjson
 
 
 class ConfigLoader(collections.UserDict):
 
     def __init__(self):
+        self.data = {}
         super().__init__()
 
     def load(self, default_config_path, user_config_path):
@@ -16,7 +17,7 @@ class ConfigLoader(collections.UserDict):
         try:
             with open(default_config_path) as f:
                 self.data = hjson.load(f)
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             raise Exception(
                 'Default config is missing. Expected file to exist: %s' %
                 default_config_path)

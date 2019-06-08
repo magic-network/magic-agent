@@ -1,4 +1,9 @@
 # Magic Gateway Alpha
+import logging
+import signal
+import asyncio
+import json
+import os
 from magic.gateway.magicradiusd import RadiusDaemon
 from magic.gateway.radiusreq import RadiusReq
 from magic.gateway.magicflaskd import FlaskDaemon
@@ -6,12 +11,7 @@ from magic.gateway.user import User
 from magic.gateway.payment.payment_type import PaymentTypeFactory
 from magic.configloader import ConfigLoader
 from magic.utils.eth import parse_address
-import logging
-import signal
-import asyncio
 from web3 import Web3
-import json
-import os
 
 
 class MagicGateway():
@@ -30,6 +30,7 @@ class MagicGateway():
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
         self.users = {}
+        self.shutdown = False
 
     def load_config(self):
 
@@ -55,7 +56,7 @@ class MagicGateway():
         with open(mgc_abi_file) as f:
             info_json = json.load(f)
 
-        self.MgcTokenContract = self.web3.eth.contract(
+        self.mgc_token_contract = self.web3.eth.contract(
             address=self.mgc_contract_address,
             abi=info_json["abi"]
         )
@@ -66,10 +67,10 @@ class MagicGateway():
         :param signum: the signal to handle
         :param frame: unused for this implementation
         """
-        if (signum == signal.SIGTERM):
+        if signum == signal.SIGTERM:
             self.logger.warning('Got SIGTERM. Shutting down.')
             self.shutdown = True
-        elif (signum == signal.SIGINT):
+        elif signum == signal.SIGINT:
             self.logger.warning('Got SIGINT. Shutting down.')
             self.shutdown = True
         else:
@@ -82,7 +83,7 @@ class MagicGateway():
         # signal.signal(signal.SIGINT, self.sighandler)
 
         self.logger.warning(
-            "Magic App Service started using eth address %s" %
+            "Magic App Service started using eth address %s",
             self.config['admin']['eth_address'])
 
         self.radius_daemon.daemon = True
@@ -106,7 +107,8 @@ class MagicGateway():
 
     async def on_user_auth(self, auth_object):
         """
-        Called from the magicradiusd daemon thread upon a successful verification of user's identity.
+        Called from the magicradiusd daemon thread upon a successful
+        verification of user's identity.
         :param auth_object: the authorization object for this user.
         """
 
@@ -130,7 +132,7 @@ class MagicGateway():
             user.on_keepalive(address, signed_message)
         except KeyError:
             self.logger.warning(
-                "Unknown user attempting keepalive. (%s)" %
+                "Unknown user attempting keepalive. (%s)",
                 address)
 
 

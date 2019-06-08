@@ -65,7 +65,7 @@ class PaymentChannel():
     def provider_payout_async(self): self.provider_payout()
     def provider_payout(self):
 
-        # self.gateway.MgcTokenContract.functions.transfer(self.gateway.address, self.provider_escrow_balance).transact()
+        # self.gateway.mgc_token_contract.functions.transfer(self.gateway.address, self.provider_escrow_balance).transact()
 
         self.provider_balance += self.provider_escrow_balance
         self.user.log(
