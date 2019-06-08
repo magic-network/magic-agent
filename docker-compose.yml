@@ -12,6 +12,7 @@ services:
     environment:
       - ADMIN_ROUTER_ADDRESS=192.168.1.1
       - ADMIN_RADIUS_SECRET=magicsecret
+      - MAGIC_LOC=/usr/app/agent
     command: ["/run.sh", "gateway", "start"]
 #  magic-payment-enabler:
 #    build: .

@@ -19,23 +19,31 @@ RUN apt-get update && \
 
 RUN pip install future
 
-RUN mkdir -p /home/pi/agent
-ADD requirements.txt /home/pi/agent/requirements.txt
+# Set the install location for the agent
+ENV MAGIC_LOC /usr/app/agent
+WORKDIR ${MAGIC_LOC}
 
-WORKDIR /home/pi/agent
-RUN pip3 install -r requirements.txt
+# Copy all the files we actually need to run the agents
+COPY magic magic
+COPY requirements.txt .
+COPY setup.py .
+COPY version.txt .
+COPY MANIFEST.in .
+COPY conf/user-config.hjson magic/gateway/config
 
-ADD . /home/pi/agent
+# Install, note the when this installs it installs it to the python dist-packages
+# thats why we need the manifest
 RUN pip3 install .
-ADD conf/user-config.hjson /home/pi/agent/gateway/config
 
-ADD magic/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
-ADD magic/resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
-ADD magic/resources/eap /etc/freeradius/3.0/mods-enabled/eap
-ADD magic/resources/clients.conf /etc/freeradius/3.0/clients.conf
+# Move the resources into place
+RUN mv ./magic/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
+RUN mv ./magic/resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
+RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/freeradius/3.0/mods-enabled/python-magic
+RUN mv ./magic/resources/eap /etc/freeradius/3.0/mods-enabled/eap
+RUN mv ./magic/resources/clients.conf /etc/freeradius/3.0/clients.conf
 
-ADD run.sh /run.sh
-ADD ssl/* /etc/freeradius/3.0/certs/
+COPY run.sh /run.sh
+COPY ssl/* /etc/freeradius/3.0/certs/
 
 EXPOSE 5000/tcp 1812/udp 1813/udp
 
