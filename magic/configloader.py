@@ -19,7 +19,7 @@ class ConfigLoader(collections.UserDict):
         except FileNotFoundError as e:
             raise Exception(
                 'Default config is missing. Expected file to exist: %s' %
-                default_config_file)
+                default_config_path)
 
         # Apply user-specific config file:
         try:
