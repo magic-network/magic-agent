@@ -4,10 +4,10 @@ import signal
 import asyncio
 import json
 import os
+from web3 import Web3
 from magic.utils.magicflaskd import FlaskDaemon
 from magic.utils.configloader import ConfigLoader
 from magic.utils.eth import parse_address
-from web3 import Web3
 
 
 class MagicAgent():

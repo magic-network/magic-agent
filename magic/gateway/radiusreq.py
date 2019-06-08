@@ -47,5 +47,5 @@ if __name__ == '__main__':
             'router_address': args.address,
             'radius_secret': args.secret}}
     rr = RadiusReq(config)
-    res = rr.sendDisconnectPacket(args.user, args.session)
+    res = rr.send_disconnect_packet(args.user, args.session)
     print(res)

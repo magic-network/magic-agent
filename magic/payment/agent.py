@@ -2,8 +2,8 @@
 import logging
 import asyncio
 import os
-from magic.agent import MagicAgent
 from web3 import Web3
+from magic.agent import MagicAgent
 
 
 class MagicPayment(MagicAgent):

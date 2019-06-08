@@ -2,12 +2,12 @@
 import logging
 import asyncio
 import os
-from magic.magicagent import MagicAgent
+from web3 import Web3
+from magic.agent import MagicAgent
 from magic.gateway.magicradiusd import RadiusDaemon
 from magic.gateway.radiusreq import RadiusReq
 from magic.gateway.user import User
 from magic.gateway.payment.payment_type import PaymentTypeFactory
-from web3 import Web3
 
 
 class MagicGateway(MagicAgent):
@@ -19,7 +19,7 @@ class MagicGateway(MagicAgent):
         self.logger = logging.getLogger('MagicGateway')
         self.radius_daemon = RadiusDaemon(self)
         try:
-            self.payment_type = PaymentTypeFactory.createPaymentType(
+            self.payment_type = PaymentTypeFactory.create_payment_type(
                 self.config)
         except Exception as e:
             self.logger.warning(e)
@@ -61,7 +61,7 @@ class MagicGateway(MagicAgent):
             return await self.users[auth_object.address].on_auth(True)
         else:
             user = self.users[auth_object.address]
-            user.radiusSessionId = auth_object.sessionId
+            user.radius_session_id = auth_object.sessionId
             return await user.on_auth()
 
     async def on_keepalive(self, address, signed_message):

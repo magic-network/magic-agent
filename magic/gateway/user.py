@@ -13,7 +13,7 @@ class User():
         self.gateway = gateway
         self.radius_req = radius_req
         self.address = address
-        self.radiusSessionId = sessionId
+        self.radius_session_id = sessionId
         self.logger = gateway.logger
         self.connected = False
         self.mp_channel = PaymentChannel(self, gateway)
@@ -63,22 +63,21 @@ class User():
         if self.mp_channel.is_open():
             # Check if already opened...
             return True
-        else:
-            # If channel isn't already opened, start a new one. only open if
-            # minimum balance in users account is met.
+        # If channel isn't already opened, start a new one. only open if
+        # minimum balance in users account is met.
 
-            await self.get_token_balance_async()
-            sufficient_tokens = self.token_balance >= self.gateway.config[
-                "admin"]["user_min_balance"]
+        await self.get_token_balance_async()
+        sufficient_tokens = self.token_balance >= self.gateway.config[
+            "admin"]["user_min_balance"]
 
-            if sufficient_tokens:
-                await self.mp_channel.open()
-                return True
-            else:
-                self.log(
-                    "new user not authenticated due to not having minimum token balance: (%s/%s)." %
-                    (self.token_balance, self.gateway.config["admin"]["user_min_balance"]))
-                return False
+        if sufficient_tokens:
+            await self.mp_channel.open()
+            return True
+        
+        self.log(
+            "new user not authenticated due to not having minimum token balance: (%s/%s)." %
+            (self.token_balance, self.gateway.config["admin"]["user_min_balance"]))
+        return False
 
     async def check_timeout(self):
 
@@ -99,7 +98,7 @@ class User():
     def disconnect_async(self): return self.disconnect()
 
     def disconnect(self):
-        # self.radius_req.sendDisconnectPacket(self.address, self.radiusSessionId)
+        # self.radius_req.sendDisconnectPacket(self.address, self.radius_session_id)
         self.connected = False
         self.logger.warning("(%s) Disconnected." % self.address)
 
