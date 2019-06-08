@@ -17,6 +17,7 @@ from web3 import Web3
 class MagicGateway():
 
     def __init__(self):
+        self.type = "gateway"
         self.load_config()
         self.logger = logging.getLogger('MagicGateway')
         self.loop = asyncio.get_event_loop()
@@ -33,7 +34,6 @@ class MagicGateway():
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
         self.users = {}
-        self.type = "gateway"
         self.shutdown = False
 
     def load_config(self):

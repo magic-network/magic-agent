@@ -13,6 +13,7 @@ from web3 import Web3
 class MagicPayment():
 
     def __init__(self):
+        self.type = "payment_enabler"
         self.load_config()
         self.logger = logging.getLogger('MagicPayment')
         self.loop = asyncio.get_event_loop()
@@ -23,7 +24,6 @@ class MagicPayment():
         self.web3 = Web3(self.web3_provider)
         self.load_eth_contracts()
         self.shutdown = False
-        self.type = "payment_enabler"
 
     def load_config(self):
 
