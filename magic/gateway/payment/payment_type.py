@@ -5,11 +5,7 @@ class PaymentTypeFactory:
 
     @staticmethod
     def createPaymentType(config):
-
-        type = config['billing']['type']
-
-        if type == "session":
+        if config['billing']['type'] == "session":
             return SessionPaymentType(config)
-        else:
-            message = "Payment type: %s not supported yet" % type
-            raise Exception(message)
+        
+        raise Exception("Payment type: %s not supported yet" % config['billing']['type'])

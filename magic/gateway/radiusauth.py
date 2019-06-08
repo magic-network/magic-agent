@@ -8,6 +8,7 @@ import socket
 import radiusd
 import authobject
 
+
 class RadiusAuth():
     def __init__(self, socket):
         self.sockpath = socket

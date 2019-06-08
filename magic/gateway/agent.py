@@ -19,7 +19,8 @@ class MagicGateway(MagicAgent):
         self.logger = logging.getLogger('MagicGateway')
         self.radius_daemon = RadiusDaemon(self)
         try:
-            self.payment_type = PaymentTypeFactory.createPaymentType(self.config)
+            self.payment_type = PaymentTypeFactory.createPaymentType(
+                self.config)
         except Exception as e:
             self.logger.warning(e)
         self.radius_requester = RadiusReq(self.config)
@@ -46,7 +47,7 @@ class MagicGateway(MagicAgent):
             await self.users[key].on_heartbeat()
 
         await super().heartbeat()
-        
+
     async def on_user_auth(self, auth_object):
         """
         Called from the magicradiusd daemon thread upon a successful
