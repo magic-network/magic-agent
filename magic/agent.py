@@ -32,6 +32,7 @@ class MagicAgent():
             default_config_path=default_config_path,
             user_config_path=user_config_path)
 
+    #pylint: disable=no-member
     def load_eth_contracts(self):
 
         self.mgc_contract_address = parse_address(
