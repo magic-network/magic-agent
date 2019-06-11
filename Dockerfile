@@ -20,7 +20,8 @@ RUN apt-get update && \
 RUN pip install future
 
 # Set the install location for the agent
-ENV MAGIC_LOC /usr/app/agent
+ARG MAGIC_LOC=/usr/app/agent
+ENV MAGIC_LOC ${MAGIC_LOC}
 WORKDIR ${MAGIC_LOC}
 
 # Copy all the files we actually need to run the agents
@@ -48,7 +49,7 @@ COPY ssl/* /etc/freeradius/3.0/certs/
 EXPOSE 5000/tcp 1812/udp 1813/udp
 
 # Add Tini
-ENV TINI_VERSION v0.18.0
+ARG TINI_VERSION=v0.18.0
 ARG ARCH=amd64
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARCH} /tini
 RUN chmod +x /tini
