@@ -18,6 +18,7 @@ RUN apt-get update && \
 	pkg-config
 
 RUN pip install future
+RUN pip3 install pylint
 
 # Set the install location for the agent
 ARG MAGIC_LOC=/usr/app/agent
