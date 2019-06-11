@@ -17,7 +17,7 @@ sudo apt-get update && \
 	pkg-config \
     git
 
-git clone https://github.com/magic-network/magic-agent
+git clone https://github.com/DomAmato/magic-agent
 cd magic-agent
 
 export MAGIC_LOC=$PWD
