@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  sut:
+    build: .
+    depends_on:
+      - lint
+      - test
+
+  lint:
+    command: pylint -rn --errors-only ./magic
+
+  test:
+    command: pytest
