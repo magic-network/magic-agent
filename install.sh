@@ -42,5 +42,10 @@ mv ssl/* /etc/freeradius/3.0/certs/
 
 sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" ./magic.service
 sudo mv ./magic.service /lib/systemd/system/magic.service
+sudo mv ./freeradius.service /lib/systemd/system/freeradius.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable magic.service
+sudo systemctl enable freeradius.service
 
 sudo reboot
