@@ -18,7 +18,7 @@ services:
       - ADMIN_ROUTER_ADDRESS=192.168.1.1
       - ADMIN_RADIUS_SECRET=magicsecret
       - MAGIC_PORT=12345
-    command: ["freeradius", "-X"]
+    command: ["/usr/sbin/freeradius", "-X"]
   gateway:
     build: 
       context: .
