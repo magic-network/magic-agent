@@ -98,11 +98,10 @@ def config_logging():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--sockpath', required=True)
     parser.add_argument('address')
     parser.add_argument('password')
     args = parser.parse_args()
     config_logging()
-    ra = RadiusAuth(args.sockpath)
+    ra = RadiusAuth()
     res = ra.authenticate(args.address, args.password, 123)
     print(res)
