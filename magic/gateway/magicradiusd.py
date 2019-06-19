@@ -62,7 +62,7 @@ class RadiusDaemon(threading.Thread):
 
         self.logger.warning("Magic Radius Service started")
 
-        ipc_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        ipc_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         ipc_sock.bind(os.getenv("MAGIC_PORT", 12345))
         ipc_sock.listen(1)
