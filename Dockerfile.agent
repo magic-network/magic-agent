@@ -2,9 +2,7 @@ FROM ubuntu:bionic
 
 RUN apt-get update && \
     apt-get install -yy \
-        python \
         python3 \
-        python-pip \
         python3-pip \
 	libssl-dev \
 	libgmp3-dev \
@@ -12,7 +10,8 @@ RUN apt-get update && \
 	libffi-dev \
 	libtool \
 	autoconf \
-	pkg-config
+	pkg-config \
+	dos2unix
 
 # Set the install location for the agent
 ARG MAGIC_LOC=/usr/app/agent
@@ -32,6 +31,8 @@ COPY conf/user-config.hjson magic/gateway/config
 RUN pip3 install .
 
 COPY run.sh /run.sh
+# Make sure it has unix line endings and no permission issues
+RUN dos2unix /run.sh
 RUN chmod 777 /run.sh
 
 EXPOSE 5000/tcp

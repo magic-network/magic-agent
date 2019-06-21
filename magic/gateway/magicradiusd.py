@@ -64,10 +64,10 @@ class RadiusDaemon(threading.Thread):
 
         ipc_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        ipc_sock.bind(os.getenv("MAGIC_PORT", 12345))
+        ipc_sock.bind(('', int(os.getenv("MAGIC_PORT", "12345"))))
         ipc_sock.listen(1)
 
-        self.logger.warning("Listening on port %s", os.getenv("MAGIC_PORT", 12345))
+        self.logger.warning("Listening on port %s", os.getenv("MAGIC_PORT", "12345"))
 
         while True:
             try:

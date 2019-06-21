@@ -9,8 +9,7 @@ services:
         ARCH: amd64
         MAGIC_LOC: /usr/app/agent
         TINI_VERSION: v0.18.0
-    image: magicnetwork/magic-agent
-    network_mode: "host"
+    image: magicnetwork/magic-radius
     ports:
       - "1812:1812/udp"
       - "1813:1813/udp"
@@ -18,6 +17,7 @@ services:
       - ADMIN_ROUTER_ADDRESS=192.168.1.1
       - ADMIN_RADIUS_SECRET=magicsecret
       - MAGIC_PORT=12345
+      - GATEWAY_LOC=gateway
     command: ["/usr/sbin/freeradius", "-X"]
   gateway:
     build: 
@@ -28,10 +28,8 @@ services:
         MAGIC_LOC: /usr/app/agent
         TINI_VERSION: v0.18.0
     image: magicnetwork/magic-agent
-    network_mode: "bridge"
     ports:
       - "5000:5000"
-      - "12345:12345"
     environment:
       - MAGIC_PORT=12345
     command: ["/run.sh", "gateway", "start"]

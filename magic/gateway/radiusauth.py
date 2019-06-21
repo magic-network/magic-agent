@@ -18,7 +18,7 @@ class RadiusAuth():
         ao = authobject.AuthObject(address, password)
         client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Docker enables us to use named containers to communcate between one another
-        client_sock.connect("http://gateway:"+os.getenv("MAGIC_PORT", "12345"))
+        client_sock.connect((os.getenv("GATEWAY_LOC", "gateway"), int(os.getenv("MAGIC_PORT", "12345"))))
         client_sock.send(ao.encode())
         client_sock.shutdown(socket.SHUT_WR)
         buf = client_sock.recv(1)
