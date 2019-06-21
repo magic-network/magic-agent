@@ -32,7 +32,7 @@ COPY conf/user-config.hjson magic/gateway/config
 
 # Install, note the when this installs it installs it to the python dist-packages
 # thats why we need the manifest
-RUN pip install .
+RUN pip3 install .
 
 # Move the resources into place
 RUN mv ./magic/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
