@@ -23,18 +23,11 @@ ENV MAGIC_LOC ${MAGIC_LOC}
 WORKDIR ${MAGIC_LOC}
 
 # Copy all the files we actually need to run the agents
-COPY magic magic
-COPY requirements.txt .
-COPY setup.py .
-COPY version.txt .
-COPY MANIFEST.in .
-COPY conf/user-config.hjson magic/gateway/config
-
-# Install, note the when this installs it installs it to the python dist-packages
-# thats why we need the manifest
-RUN pip3 install .
+COPY magic/radius magic/radius
+COPY magic/utils/authobject.py magic/radius/authobject.py
 
 # Move the resources into place
+COPY magic/resources magic/resources
 RUN mv ./magic/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
 RUN mv ./magic/resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
 RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/freeradius/3.0/mods-enabled/python-magic

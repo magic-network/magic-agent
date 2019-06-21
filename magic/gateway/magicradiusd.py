@@ -3,7 +3,7 @@ import os
 import socket
 import threading
 import asyncio
-from magic.gateway.authobject import AuthObject
+from magic.utils.authobject import AuthObject
 from magic.utils.eth import verify_sig
 
 
