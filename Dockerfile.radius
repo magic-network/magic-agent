@@ -1,48 +1,34 @@
-FROM ubuntu:bionic
+FROM freeradius/freeradius-server:latest
 
-RUN apt-get update && \
-    apt-get install -yy \
-        freeradius \
-        freeradius-config \
-        freeradius-common \
-        python \
-        python-pip \
-	libssl-dev \
-	libgmp3-dev \
-	libffi6 \
-	libffi-dev \
-	libtool \
-	autoconf \
-	pkg-config
+# Using pip more than doubles the image size
+# RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+# RUN apt-get update && apt-get install python-pip -y
+# RUN pip install future
 
-RUN pip install future
+RUN apt-get update && apt-get install curl python -y
 
 # Set the install location for the agent
 ARG MAGIC_LOC=/usr/app/agent
 ENV MAGIC_LOC ${MAGIC_LOC}
 WORKDIR ${MAGIC_LOC}
 
+# Fixes ImportError (No module named builtins) for python 2
+RUN curl https://files.pythonhosted.org/packages/90/52/e20466b85000a181e1e144fd8305caf2cf475e2f9674e797b222f8105f5f/future-0.17.1.tar.gz | tar -xz \
+    && cd future-0.17.1 && python setup.py install \
+    && cd .. && rm -r future-0.17.1
+
 # Copy all the files we actually need to run the agents
 COPY magic/radius magic/radius
 COPY magic/utils/authobject.py magic/radius/authobject.py
 
 # Move the resources into place
-COPY magic/resources magic/resources
-RUN mv ./magic/resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
-RUN mv ./magic/resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
-RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/freeradius/3.0/mods-enabled/python-magic
-RUN mv ./magic/resources/eap /etc/freeradius/3.0/mods-enabled/eap
-RUN mv ./magic/resources/clients.conf /etc/freeradius/3.0/clients.conf
+COPY magic/resources/inner-tunnel /etc/freeradius/sites-enabled/inner-tunnel
+COPY magic/resources/python-magic /etc/freeradius/mods-enabled/python-magic
+RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/freeradius/mods-enabled/python-magic
+COPY magic/resources/eap /etc/freeradius/mods-enabled/eap
+COPY magic/resources/clients.conf /etc/freeradius/clients.conf
 
-COPY ssl/* /etc/freeradius/3.0/certs/
+# Install the certs
+COPY ssl/* /etc/freeradius/certs/
 
-EXPOSE 1812/udp 1813/udp
-
-# Add Tini
-ARG TINI_VERSION=v0.18.0
-ARG ARCH=amd64
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARCH} /tini
-RUN chmod +x /tini
-
-ENTRYPOINT ["/tini", "--"]
-CMD ["/usr/sbin/freeradius", "-X"] # Set default command
+CMD ["freeradius", "-X"] # Set default command

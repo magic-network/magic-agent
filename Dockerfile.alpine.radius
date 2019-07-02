@@ -1,0 +1,36 @@
+FROM freeradius/freeradius-server:latest-alpine
+
+# Using pip is probably ok it only adds about 15% to the image size
+#RUN apk update && apk add curl python2-dev py-pip
+#RUN pip install future
+
+RUN apk update && apk add curl python2
+
+# Set the install location for the agent
+ARG MAGIC_LOC=/usr/app/agent
+ENV MAGIC_LOC ${MAGIC_LOC}
+WORKDIR ${MAGIC_LOC}
+
+# Fixes ImportError (No module named builtins) for python 2
+RUN curl https://files.pythonhosted.org/packages/90/52/e20466b85000a181e1e144fd8305caf2cf475e2f9674e797b222f8105f5f/future-0.17.1.tar.gz | tar -xz \
+    && cd future-0.17.1 && python setup.py install \
+    && cd .. && rm -r future-0.17.1
+
+# Copy all the files we actually need to run the agents
+COPY magic/radius magic/radius
+COPY magic/utils/authobject.py magic/radius/authobject.py
+
+# Move the resources into place
+COPY magic/resources/inner-tunnel /etc/raddb/sites-enabled/inner-tunnel
+COPY magic/resources/python-magic /etc/raddb/mods-enabled/python-magic
+RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/raddb/mods-enabled/python-magic
+COPY magic/resources/eap /etc/raddb/mods-enabled/eap
+COPY magic/resources/clients.conf /etc/raddb/clients.conf
+
+# Install the certs
+COPY ssl/* /etc/raddb/certs/
+
+# Make sure the library is found
+ENV LD_PRELOAD=/usr/lib/libpython2.7.so.1.0
+
+CMD ["freeradius", "-X"] # Set default command

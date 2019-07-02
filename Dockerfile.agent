@@ -1,17 +1,8 @@
-FROM ubuntu:bionic
+FROM python:3.7-slim
 
-RUN apt-get update && \
-    apt-get install -yy \
-        python3 \
-        python3-pip \
-	libssl-dev \
-	libgmp3-dev \
-	libffi6 \
-	libffi-dev \
-	libtool \
-	autoconf \
-	pkg-config \
-	dos2unix
+RUN apt-get update && apt-get install -y \
+	build-essential automake pkg-config \
+	libtool libffi-dev libssl-dev
 
 # Set the install location for the agent
 ARG MAGIC_LOC=/usr/app/agent
@@ -30,18 +21,6 @@ COPY conf/user-config.hjson magic/gateway/config
 # thats why we need the manifest
 RUN pip3 install .
 
-COPY run.sh /run.sh
-# Make sure it has unix line endings and no permission issues
-RUN dos2unix /run.sh
-RUN chmod 777 /run.sh
-
 EXPOSE 5000/tcp
 
-# Add Tini
-ARG TINI_VERSION=v0.18.0
-ARG ARCH=amd64
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARCH} /tini
-RUN chmod +x /tini
-
-ENTRYPOINT ["/tini", "--"]
-CMD ["/run.sh", "gateway", "start"] # Set default command
+CMD python $MAGIC_LOC/magic/bin/magic-network gateway start

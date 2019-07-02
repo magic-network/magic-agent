@@ -6,9 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.radius
       args:
-        ARCH: amd64
         MAGIC_LOC: /usr/app/agent
-        TINI_VERSION: v0.18.0
     image: magicnetwork/magic-radius
     ports:
       - "1812:1812/udp"
@@ -18,21 +16,32 @@ services:
       - ADMIN_RADIUS_SECRET=magicsecret
       - MAGIC_PORT=12345
       - GATEWAY_LOC=gateway
-    command: ["/usr/sbin/freeradius", "-X"]
+  freeradius-alpine:
+    build: 
+      context: .
+      dockerfile: Dockerfile.alpine.radius
+      args:
+        MAGIC_LOC: /usr/app/agent
+    image: magicnetwork/magic-radius-alpine
+    ports:
+      - "1812:1812/udp"
+      - "1813:1813/udp"
+    environment:
+      - ADMIN_ROUTER_ADDRESS=192.168.1.1
+      - ADMIN_RADIUS_SECRET=magicsecret
+      - MAGIC_PORT=12345
+      - GATEWAY_LOC=gateway
   gateway:
     build: 
       context: .
       dockerfile: Dockerfile.agent
       args:
-        ARCH: amd64
         MAGIC_LOC: /usr/app/agent
-        TINI_VERSION: v0.18.0
     image: magicnetwork/magic-agent
     ports:
       - "5000:5000"
     environment:
       - MAGIC_PORT=12345
-    command: ["/run.sh", "gateway", "start"]
 #  magic-payment-enabler:
 #    build: .
 #    image: magicnetwork/magic-agent
