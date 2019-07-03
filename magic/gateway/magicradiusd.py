@@ -55,7 +55,7 @@ class RadiusDaemon(threading.Thread):
         signature = password_tokens[1]
 
         # TODO: Add: Check if timestamp is within a window... Will this require
-        # the client to remake a profile?
+        # the client to remake a profile? it will on macOS
         return verify_sig("auth_" + timestamp, signature, address)
 
     def run(self):

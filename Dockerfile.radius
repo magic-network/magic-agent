@@ -22,11 +22,11 @@ COPY magic/radius magic/radius
 COPY magic/utils/authobject.py magic/radius/authobject.py
 
 # Move the resources into place
-COPY magic/resources/inner-tunnel /etc/freeradius/sites-enabled/inner-tunnel
-COPY magic/resources/python-magic /etc/freeradius/mods-enabled/python-magic
+COPY resources/inner-tunnel /etc/freeradius/sites-enabled/inner-tunnel
+COPY resources/python-magic /etc/freeradius/mods-enabled/python-magic
 RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/freeradius/mods-enabled/python-magic
-COPY magic/resources/eap /etc/freeradius/mods-enabled/eap
-COPY magic/resources/clients.conf /etc/freeradius/clients.conf
+COPY resources/eap /etc/freeradius/mods-enabled/eap
+COPY resources/clients.conf /etc/freeradius/clients.conf
 
 # Install the certs
 COPY ssl/* /etc/freeradius/certs/

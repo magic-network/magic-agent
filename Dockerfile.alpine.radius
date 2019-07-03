@@ -21,11 +21,11 @@ COPY magic/radius magic/radius
 COPY magic/utils/authobject.py magic/radius/authobject.py
 
 # Move the resources into place
-COPY magic/resources/inner-tunnel /etc/raddb/sites-enabled/inner-tunnel
-COPY magic/resources/python-magic /etc/raddb/mods-enabled/python-magic
+COPY resources/inner-tunnel /etc/raddb/sites-enabled/inner-tunnel
+COPY resources/python-magic /etc/raddb/mods-enabled/python-magic
 RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/raddb/mods-enabled/python-magic
-COPY magic/resources/eap /etc/raddb/mods-enabled/eap
-COPY magic/resources/clients.conf /etc/raddb/clients.conf
+COPY resources/eap /etc/raddb/mods-enabled/eap
+COPY resources/clients.conf /etc/raddb/clients.conf
 
 # Install the certs
 COPY ssl/* /etc/raddb/certs/
