@@ -1,0 +1,10 @@
+[Unit]
+ Description=Magic Gateway Service
+ After=multi-user.target
+
+ [Service]
+ Type=idle
+ ExecStart=/usr/bin/python3 MAGIC_LOC/magic/bin/magic-network gateway start
+
+ [Install]
+ WantedBy=multi-user.target

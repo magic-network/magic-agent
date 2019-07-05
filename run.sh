@@ -2,8 +2,7 @@
 
 case "$1" in
   gateway)
-    python3 "$MAGIC_LOC"/magic/bin/magic-network "$@" &
-    freeradius -X
+    python3 "$MAGIC_LOC"/magic/bin/magic-network "$@"
     ;;
   payment|privacy)
     python3 "$MAGIC_LOC"/magic/bin/magic-network "$@"
