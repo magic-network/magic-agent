@@ -16,28 +16,13 @@ services:
       - ADMIN_RADIUS_SECRET=magicsecret
       - MAGIC_PORT=12345
       - GATEWAY_LOC=gateway
-  freeradius-alpine:
-    build: 
-      context: .
-      dockerfile: Dockerfile.alpine.radius
-      args:
-        MAGIC_LOC: /usr/app/agent
-    image: magicnetwork/magic-radius-alpine
-    ports:
-      - "1812:1812/udp"
-      - "1813:1813/udp"
-    environment:
-      - ADMIN_ROUTER_ADDRESS=192.168.1.1
-      - ADMIN_RADIUS_SECRET=magicsecret
-      - MAGIC_PORT=12345
-      - GATEWAY_LOC=gateway
   gateway:
     build: 
       context: .
       dockerfile: Dockerfile.agent
       args:
         MAGIC_LOC: /usr/app/agent
-    image: magicnetwork/magic-agent
+    image: magicnetwork/magic-gateway
     ports:
       - "5000:5000"
     environment:
