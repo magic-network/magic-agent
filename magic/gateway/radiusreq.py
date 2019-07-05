@@ -1,11 +1,11 @@
+import logging
+import os
 from pyrad.client import Client
 from pyrad import dictionary
 from pyrad import packet
-import logging
-import os
 
 
-class RadiusReq(object):
+class RadiusReq():
     def __init__(self, config):
         self.logger = logging.getLogger(__name__)
         dictfile = os.path.dirname(
@@ -15,7 +15,7 @@ class RadiusReq(object):
             secret=config['admin']['radius_secret'].encode('ascii'),
             dict=dictionary.Dictionary(dictfile))
 
-    def sendDisconnectPacket(self, user, session):
+    def send_disconnect_packet(self, user, session):
         params = {
             'User_Name': user,
             'Acct_Session_Id': session
@@ -47,5 +47,5 @@ if __name__ == '__main__':
             'router_address': args.address,
             'radius_secret': args.secret}}
     rr = RadiusReq(config)
-    res = rr.sendDisconnectPacket(args.user, args.session)
+    res = rr.send_disconnect_packet(args.user, args.session)
     print(res)

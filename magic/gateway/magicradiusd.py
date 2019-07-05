@@ -1,10 +1,10 @@
-from magic.gateway.authobject import AuthObject
-from magic.utils.eth import verify_sig
 import logging
 import os
 import socket
 import threading
 import asyncio
+from magic.gateway.authobject import AuthObject
+from magic.utils.eth import verify_sig
 
 
 class RadiusDaemon(threading.Thread):
@@ -87,7 +87,7 @@ class RadiusDaemon(threading.Thread):
             try:
                 ao = AuthObject()
                 ao.decode(authbuf)
-            except ValueError as e:
+            except ValueError:
                 self.logger.warning('Got invalid string via socket')
                 continue
             self.logger.info("AO=%s", repr(ao))

@@ -1,10 +1,11 @@
+import os
 from ethereum.utils import sha3
 from web3 import Web3
 from web3.auto import w3
 
 # Generate a new ethereum account
 
-
+#pylint: disable=no-member
 def generate_account():
 
     acct = w3.eth.account.create(os.urandom(4096))

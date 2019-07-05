@@ -19,7 +19,7 @@ setup(
     include_package_data=True,
     install_requires=open('requirements.txt').read().split(),
     dependency_links=[
-      'git+https://github.com/polyswarm/ethash.git#egg=pyethash-0.1.27'
+        'git+https://github.com/polyswarm/ethash.git#egg=pyethash-0.1.27'
     ],
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],

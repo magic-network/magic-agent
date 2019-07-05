@@ -1,5 +1,5 @@
-from magic.configloader import ConfigLoader
 import os
+from magic.utils.configloader import ConfigLoader
 
 
 def test_default_config(payment_enabler):

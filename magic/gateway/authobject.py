@@ -6,7 +6,7 @@ from builtins import (bytes, str)
 import json
 
 
-class AuthObject(object):
+class AuthObject():
     def __init__(self, address='', password='', sess=''):
         self.params = {
             'address': address,
