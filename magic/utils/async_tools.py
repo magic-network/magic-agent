@@ -2,6 +2,7 @@ import functools
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
 
+
 def sync_to_async(fn):
     '''
     turns a sync function to async function using threads
@@ -14,6 +15,7 @@ def sync_to_async(fn):
         return asyncio.wrap_future(future)  # make it awaitable
 
     return wrapper
+
 
 def async_to_sync(fn):
     '''

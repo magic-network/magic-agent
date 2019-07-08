@@ -1,0 +1,10 @@
+[Unit]
+ Description=Magic Gateway Service
+ After=multi-user.target
+
+ [Service]
+ Type=idle
+ ExecStart=/usr/sbin/freeradius -X
+
+ [Install]
+ WantedBy=multi-user.target

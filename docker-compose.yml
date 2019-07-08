@@ -1,18 +1,32 @@
 version: '3'
 
 services:
-  magic-gateway:
-    build: .
-    image: magicnetwork/magic-agent
-    network_mode: "host"
+  freeradius:
+    build: 
+      context: .
+      dockerfile: Dockerfile.radius
+      args:
+        MAGIC_LOC: /usr/app/agent
+    image: magicnetwork/magic-radius
     ports:
       - "1812:1812/udp"
       - "1813:1813/udp"
-      - "5000:5000"
     environment:
       - ADMIN_ROUTER_ADDRESS=192.168.1.1
       - ADMIN_RADIUS_SECRET=magicsecret
-    command: ["/run.sh", "gateway", "start"]
+      - MAGIC_PORT=12345
+      - GATEWAY_LOC=gateway
+  gateway:
+    build: 
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        MAGIC_LOC: /usr/app/agent
+    image: magicnetwork/magic-gateway
+    ports:
+      - "5000:5000"
+    environment:
+      - MAGIC_PORT=12345
 #  magic-payment-enabler:
 #    build: .
 #    image: magicnetwork/magic-agent

@@ -2,11 +2,10 @@
 
 case "$1" in
   gateway)
-    python3 /home/pi/agent/magic/bin/magic-network "$@" &
-    freeradius -X
+    python3 "$MAGIC_LOC"/magic/bin/magic-network "$@"
     ;;
   payment|privacy)
-    python3 /home/pi/agent/magic/bin/magic-network "$@"
+    python3 "$MAGIC_LOC"/magic/bin/magic-network "$@"
     ;;
   *)
     # The command is something like bash, not an magic subcommand. Just run it in the right environment.

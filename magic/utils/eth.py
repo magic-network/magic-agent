@@ -1,8 +1,10 @@
-import os
+from web3 import Web3
 from web3.auto import w3
 from ethereum.utils import privtoaddr, encode_hex, decode_hex, ecsign, sha3, normalize_key, ecrecover_to_pub, checksum_encode
 
 # Generate a new ethereum account
+
+#pylint: disable=no-member
 def generate_account():
 
     acct = w3.eth.account.create(os.urandom(4096))
@@ -29,6 +31,10 @@ def verify_sig(message, signature, address):
         return False
 
     return address == recovered_address
+
+
+def parse_address(address_string):
+    return Web3.toChecksumAddress(address_string.lower())
 
 def pubtoaddr(pub):
     return encode_hex(sha3(pub)[-20:])
