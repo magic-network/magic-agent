@@ -1,0 +1,17 @@
+language: python            # this works for Linux but is an error on macOS or Windows
+matrix:
+  include:
+    - name: "Python 3.7.1 on Xenial Linux"
+      python: 3.7           # this works for Linux but is ignored on macOS or Windows
+      dist: xenial          # required for Python >= 3.7
+    - name: "Python 3.7.2 on macOS"
+      os: osx
+      osx_image: xcode10.2  # Python 3.7.2 running on macOS 10.14.3
+      language: shell       # 'language: python' is an error on Travis CI macOS
+install: 
+  - pip3 install --upgrade pip  # all three OSes agree about 'pip3'
+  - pip3 install pylint
+  - pip3 install .
+script: 
+  - pylint -rn --errors-only ./magic
+  - pytest
