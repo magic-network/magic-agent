@@ -5,19 +5,20 @@
 import argparse
 import logging
 import socket
+import os
 import radiusd
 import authobject
 
 
 class RadiusAuth():
-    def __init__(self, socket):
-        self.sockpath = socket
+    def __init__(self):
         self.logger = logging.getLogger('RadiusAuth')
 
     def authenticate(self, address, password, sess_id):
         ao = authobject.AuthObject(address, password)
-        client_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        client_sock.connect(self.sockpath)
+        client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Docker enables us to use named containers to communcate between one another
+        client_sock.connect((os.getenv("GATEWAY_LOC", "gateway"), int(os.getenv("MAGIC_PORT", "12345"))))
         client_sock.send(ao.encode())
         client_sock.shutdown(socket.SHUT_WR)
         buf = client_sock.recv(1)
@@ -66,8 +67,7 @@ class RadiusAuth():
 def authorize(p):
     radiusd.radlog(radiusd.L_INFO, '*** magic authorize ***')
     config_logging()
-    sockpath = '/tmp/magicsock'
-    ra = RadiusAuth(sockpath)
+    ra = RadiusAuth()
     ra.handle_radius_authorize(p)
     return (radiusd.RLM_MODULE_OK,
             tuple(),
@@ -79,9 +79,8 @@ def authorize(p):
 def authenticate(p):
     radiusd.radlog(radiusd.L_INFO, '*** magic authenticate ***')
     config_logging()
-    sockpath = '/tmp/magicsock'
     try:
-        ra = RadiusAuth(sockpath)
+        ra = RadiusAuth()
         result = ra.handle_radius_authenticate(p)
     except Exception as e:
         msg = repr(e)
@@ -99,11 +98,10 @@ def config_logging():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--sockpath', required=True)
     parser.add_argument('address')
     parser.add_argument('password')
     args = parser.parse_args()
     config_logging()
-    ra = RadiusAuth(args.sockpath)
+    ra = RadiusAuth()
     res = ra.authenticate(args.address, args.password, 123)
     print(res)

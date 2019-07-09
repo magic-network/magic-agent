@@ -1,34 +1,29 @@
 {
   "admin": {
     "eth_address": "0x0000000000000000000000000000000000000000"
-    "eth_private_key": "0000000000000000000000000000000000000000"
+    "eth_private_key": "0000000000000000000000000000s000000000000"
     "infura_api_key": "50686e66f0c143dc968ee9ab73a726a8"
+    "default_penabler_url": "http://127.0.0.1:5001"
     "user_min_balance": 0
     "whitelist": [ "0x001", "0x002", "0x003" ]
     "blacklist": [ "0x004", "0x005", "0x006" ]
     "router_address":"192.168.1.1"
     "radius_secret":"magicsecret"       # TODO randomly generate this
   },
+  "webapi": {
+    "host": "127.0.0.1",
+    "port": 8080
+  },
   "billing": {
+    "type": "free",
 
   # Example of a session_based AP
-    "type": "session"
-    "duration": 20                       # session length in seconds.
-    "charge": 5000                       # tokens per session
-    "cost_to_open": 100                  # additional cost to start a new session
-    "max_bytes": 1000000000
-    "prorata": true                     # if false, charge will be applied regardless of time used
-
-  # Example of a free AP
-  # "type": "free",
-  # "max_bytes": 1000000000,
-
-  # Example of a per_bytes session AP
-  # "type": "bytes",
-  # "charge": 1,
-  # "per_x_bytes": 1000000,
-  # "max_bytes": 1000000000,
-  # "cost_to_open": 1
+  # "type": "session"
+  # "duration": 20                       # session length in seconds.
+  # "charge": 100                        # tokens per session
+  # "cost_to_open": 100                  # additional cost to start a new session
+  # "max_bytes": 1000000000
+  # "prorata": true
 
   },
   "dev": {
@@ -38,5 +33,6 @@
     "user_timeout": 10                  # time in seconds before a user needs to check in with a keepalive request
     "mgc_address": "0xc3cbfd0d0f583987ea43d92f7bc2624052ffd6f5"
     "mgc_faucet_address": "0x7ca9360a59737e5bf3611b1877db8abe292db033"
+    "mgc_channels_address": "0x0df70c960542cf3bc879772fb84e24ea614024b5"
   }
 }

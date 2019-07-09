@@ -1,0 +1,10 @@
+[Unit]
+ Description=Magic Gateway Service
+ After=multi-user.target
+
+ [Service]
+ Type=idle
+ ExecStart=/usr/local/bin/docker-compose -f MAGIC_LOC/docker-compose.yml up -d freeradius gateway
+
+ [Install]
+ WantedBy=multi-user.target

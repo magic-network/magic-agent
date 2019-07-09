@@ -1,11 +1,18 @@
 {
   "admin": {
     "eth_address": "0x0000000000000000000000000000000000000000"
-    "eth_private_key": "0000000000000000000000000000000000000000"
+    "eth_private_key": "0000000000000000000000000000s000000000000"
     "infura_api_key": "50686e66f0c143dc968ee9ab73a726a8"
+    "airdrop_eth": 1000000000000000
+    "airdrop_mgc": 100000
+  },
+  "webapi": {
+    "host": "127.0.0.1",
+    "port": 5001
   },
   "dev": {
     "mgc_address": "0xc3cbfd0d0f583987ea43d92f7bc2624052ffd6f5"
     "mgc_faucet_address": "0x7ca9360a59737e5bf3611b1877db8abe292db033"
+    "mgc_channels_address": "0x0df70c960542cf3bc879772fb84e24ea614024b5"
   }
 }
