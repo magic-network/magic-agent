@@ -3,7 +3,7 @@ import os
 import socket
 import threading
 import asyncio
-from magic.gateway.authobject import AuthObject
+from magic.utils.authobject import AuthObject
 from magic.utils.eth import verify_sig
 
 
@@ -55,25 +55,19 @@ class RadiusDaemon(threading.Thread):
         signature = password_tokens[1]
 
         # TODO: Add: Check if timestamp is within a window... Will this require
-        # the client to remake a profile?
+        # the client to remake a profile? it will on macOS
         return verify_sig("auth_" + timestamp, signature, address)
 
     def run(self):
 
         self.logger.warning("Magic Radius Service started")
 
-        ipc_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        sockpath = self.config['dev']['sockpath']
+        ipc_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        try:
-            os.unlink(sockpath)
-        except FileNotFoundError:
-            pass
-        ipc_sock.bind(sockpath)
-        os.chmod(sockpath, 666)
+        ipc_sock.bind(('', int(os.getenv("MAGIC_PORT", "12345"))))
         ipc_sock.listen(1)
 
-        self.logger.warning("Listening on %s", sockpath)
+        self.logger.warning("Listening on port %s", os.getenv("MAGIC_PORT", "12345"))
 
         while True:
             try:

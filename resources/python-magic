@@ -9,7 +9,7 @@
 python magic {
 	module = radiusauth
 
-	python_path = MAGIC_LOC/magic/gateway:/usr/lib/python2.7:/usr/lib/python2.7/lib-dynload:/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages
+	python_path = MAGIC_LOC/magic/radius:/usr/lib/python2.7:/usr/lib/python2.7/lib-dynload:/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages:/usr/lib/python2.7/site-packages
 
 	mod_authorize = ${.module}
 	func_authorize = authorize

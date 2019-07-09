@@ -1,27 +1,44 @@
 version: '3'
 
 services:
-  magic-gateway:
+  freeradius:
     build: 
       context: .
+      dockerfile: Dockerfile.radius
       args:
-        ARCH: amd64
         MAGIC_LOC: /usr/app/agent
-        TINI_VERSION: v0.18.0
-    image: magicnetwork/magic-agent
-    network_mode: "host"
+    image: magicnetwork/magic-radius
     ports:
       - "1812:1812/udp"
       - "1813:1813/udp"
-      - "5000:5000"
     environment:
       - ADMIN_ROUTER_ADDRESS=192.168.1.1
       - ADMIN_RADIUS_SECRET=magicsecret
-    command: ["/run.sh", "gateway", "start"]
-#  magic-payment-enabler:
-#    build: .
-#    image: magicnetwork/magic-agent
-#    network_mode: "host"
-#    ports:
-#    - "8080:5000"
-#    command: ["/run.sh", "payment", "start"]
+      - MAGIC_PORT=12345
+      - GATEWAY_LOC=gateway
+  gateway:
+    build: 
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        MAGIC_LOC: /usr/app/agent
+        AGENT_TYPE: gateway
+    image: magicnetwork/magic-gateway
+    ports:
+      - "5000:5000"
+    environment:
+      - MAGIC_PORT=12345
+  payments:
+    build: 
+      context: .
+      dockerfile: Dockerfile.agent
+      args:
+        MAGIC_LOC: /usr/app/agent
+        AGENT_TYPE: payment
+    image: magicnetwork/magic-payments
+    ports:
+      - "8080:5001"
+    environment:
+        - PYTHONUNBUFFERED=1
+      # - ADMIN_ETH_ADDRESS=0x00
+      # - ADMIN_ETH_PRIVATE_KEY=0x00

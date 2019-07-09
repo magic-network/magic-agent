@@ -172,7 +172,7 @@ eap {
 	tls-config tls-common {
 		private_key_password = whatever
 		#private_key_file = /etc/ssl/private/ssl-cert-snakeoil.key
-		private_key_file = /etc/freeradius/3.0/certs/server.key
+		private_key_file = /etc/raddb/certs/server.key
 
 		#  If Private key & Certificate are located in
 		#  the same file, then private_key_file &
@@ -185,7 +185,7 @@ eap {
 		#  of the CA certificates used to sign the
 		#  server certificate.
 		#certificate_file = /etc/ssl/certs/ssl-cert-snakeoil.pem
-		certificate_file = /etc/freeradius/3.0/certs/server.pem
+		certificate_file = /etc/raddb/certs/server.pem
 
 		#  Trusted Root CA list
 		#
