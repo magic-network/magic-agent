@@ -1,10 +1,11 @@
-from magic.gateway.radius.authobject import AuthObject
-from magic.utils.eth import verify_sig
 import logging
 import os
 import socket
 import threading
 import asyncio
+from magic.utils.authobject import AuthObject
+from magic.utils.eth import verify_sig
+
 
 class RadiusDaemon(threading.Thread):
 
@@ -14,7 +15,6 @@ class RadiusDaemon(threading.Thread):
         self.config = gateway.config
         self.shutdown = False
         threading.Thread.__init__(self)
-
 
     def read_data_from_conn(self, conn):
         buf = bytes()
@@ -31,7 +31,6 @@ class RadiusDaemon(threading.Thread):
 
     def gen_auth_response(self, auth_succeed):
         return b'\x01' if auth_succeed else b'\x00'
-
 
     def static_auth(self, auth_object):
         return (auth_object.address == self.config["dev"]['address']
@@ -55,25 +54,20 @@ class RadiusDaemon(threading.Thread):
         timestamp = password_tokens[0]
         signature = password_tokens[1]
 
-        # TODO: Add: Check if timestamp is within a window... Will this require the client to remake a profile?
+        # TODO: Add: Check if timestamp is within a window... Will this require
+        # the client to remake a profile? it will on macOS
         return verify_sig("auth_" + timestamp, signature, address)
 
     def run(self):
 
         self.logger.warning("Magic Radius Service started")
 
-        ipc_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        sockpath = self.config['dev']['sockpath']
+        ipc_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        try:
-            os.unlink(sockpath)
-        except FileNotFoundError:
-            pass
-        ipc_sock.bind(sockpath)
-        os.chmod(sockpath, 666)
+        ipc_sock.bind(('', int(os.getenv("MAGIC_PORT", "12345"))))
         ipc_sock.listen(1)
 
-        self.logger.warning("Listening on %s", sockpath)
+        self.logger.warning("Listening on port %s", os.getenv("MAGIC_PORT", "12345"))
 
         while True:
             try:
@@ -87,7 +81,7 @@ class RadiusDaemon(threading.Thread):
             try:
                 ao = AuthObject()
                 ao.decode(authbuf)
-            except ValueError as e:
+            except ValueError:
                 self.logger.warning('Got invalid string via socket')
                 continue
             self.logger.info("AO=%s", repr(ao))
@@ -95,8 +89,10 @@ class RadiusDaemon(threading.Thread):
             identity_verified = self.check_identity(ao)
 
             if identity_verified:
-                success_future = asyncio.run_coroutine_threadsafe(self.gateway.on_user_auth(ao), self.gateway.loop)
-                # TODO: Refactor: This potentially blocks the thread for other users until the result is returned.
+                success_future = asyncio.run_coroutine_threadsafe(
+                    self.gateway.on_user_auth(ao), self.gateway.loop)
+                # TODO: Refactor: This potentially blocks the thread for other
+                # users until the result is returned.
                 validated = success_future.result()
                 conn.send(self.gen_auth_response(validated))
             else:

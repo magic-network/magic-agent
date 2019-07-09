@@ -9,13 +9,17 @@ ARG MAGIC_LOC=/usr/app/agent
 ENV MAGIC_LOC ${MAGIC_LOC}
 WORKDIR ${MAGIC_LOC}
 
+# Set the agent type
+ARG AGENT_TYPE=gateway
+ENV AGENT_TYPE ${AGENT_TYPE}
+
 # Copy all the files we actually need to run the agents
 COPY magic magic
 COPY requirements.txt .
 COPY setup.py .
 COPY version.txt .
 COPY MANIFEST.in .
-COPY conf/user-config.hjson magic/gateway/config
+COPY conf/user-config.hjson magic/${AGENT_TYPE}
 
 # Install, note the when this installs it installs it to the python dist-packages
 # thats why we need the manifest
@@ -25,5 +29,6 @@ EXPOSE 5000/tcp
 
 COPY resources/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/supervisor/conf.d/supervisord.conf
+RUN sed -i "s@AGENT_TYPE@"${AGENT_TYPE}"@g" /etc/supervisor/conf.d/supervisord.conf
 
 CMD /usr/bin/supervisord

@@ -3,20 +3,22 @@
 # credentials are correct
 
 import argparse
-import authobject
 import logging
-import radiusd
 import socket
+import os
+import radiusd
+import authobject
 
-class RadiusAuth(object):
-    def __init__(self, socket):
-        self.sockpath = socket
+
+class RadiusAuth():
+    def __init__(self):
         self.logger = logging.getLogger('RadiusAuth')
 
     def authenticate(self, address, password, sess_id):
         ao = authobject.AuthObject(address, password)
-        client_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        client_sock.connect(self.sockpath)
+        client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Docker enables us to use named containers to communcate between one another
+        client_sock.connect((os.getenv("GATEWAY_LOC", "gateway"), int(os.getenv("MAGIC_PORT", "12345"))))
         client_sock.send(ao.encode())
         client_sock.shutdown(socket.SHUT_WR)
         buf = client_sock.recv(1)
@@ -38,10 +40,19 @@ class RadiusAuth(object):
         sess = ''
         for param in p:
             name = param[0]
+            # We have to check the username and password because
+            # there are arbitray character limits in iOS that force
+            # us to switch the fields
             if name == 'User-Name':
-                address = param[1]
+                if '-' in param[1]:
+                    password = param[1]
+                else:
+                    address = param[1]
             elif name == 'User-Password':
-                password = param[1]
+                if '-' in param[1]:
+                    password = param[1]
+                else:
+                    address = param[1]
             elif name == 'Acct-Session-Id':
                 sess = param[1]
         if not address or not password:
@@ -52,37 +63,33 @@ class RadiusAuth(object):
         return result
 
 
-
 # Functions used by FreeRadius
 def authorize(p):
     radiusd.radlog(radiusd.L_INFO, '*** magic authorize ***')
     config_logging()
-    sockpath = '/tmp/magicsock'
-    ra = RadiusAuth(sockpath)
+    ra = RadiusAuth()
     ra.handle_radius_authorize(p)
     return (radiusd.RLM_MODULE_OK,
             tuple(),
-            ( 
+            (
                 ('Auth-Type', 'magic'),
-            ) )
+            ))
 
 
 def authenticate(p):
     radiusd.radlog(radiusd.L_INFO, '*** magic authenticate ***')
     config_logging()
-    sockpath = '/tmp/magicsock'
     try:
-        ra = RadiusAuth(sockpath)
+        ra = RadiusAuth()
         result = ra.handle_radius_authenticate(p)
     except Exception as e:
         msg = repr(e)
-        radiusd.radlog(radiusd.L_ERR, '*** ERROR:'+msg)
+        radiusd.radlog(radiusd.L_ERR, '*** ERROR:' + msg)
         return radiusd.RLM_MODULE_FAIL
     if result:
         return radiusd.RLM_MODULE_OK
     return radiusd.RLM_MODULE_REJECT
-#End FreeRadius functions
-
+# End FreeRadius functions
 
 
 def config_logging():
@@ -91,12 +98,10 @@ def config_logging():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--sockpath', required=True)
     parser.add_argument('address')
     parser.add_argument('password')
     args = parser.parse_args()
     config_logging()
-    ra = RadiusAuth(args.sockpath)
+    ra = RadiusAuth()
     res = ra.authenticate(args.address, args.password, 123)
     print(res)
-
