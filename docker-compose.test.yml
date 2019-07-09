@@ -2,15 +2,16 @@ version: '3'
 
 services:
   sut:
-    build: .
     depends_on:
       - lint
       - test
 
   lint:
     build: .
+    dockerfile: Dockerfile.agent
     command: pylint -rn --errors-only ./magic
 
   test:
     build: .
+    dockerfile: Dockerfile.agent
     command: pytest
