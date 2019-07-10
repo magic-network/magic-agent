@@ -7,15 +7,16 @@ dist: xenial          # required for Python >= 3.7
 sudo: required
 
 before_install:
-  # - sudo apt purge docker-ce docker-ce-cli
+  - docker --version
+  - sudo apt purge docker-ce
   - curl -fsSL https://get.docker.com/ -o docker-install.sh
   - CHANNEL=nightly sh docker-install.sh
+  - docker --version
 
 install: 
   - pip3 install --upgrade pip 
   - pip3 install pylint
   - pip3 install pytest
-  - pip3 install psutil
   - pip3 install .
 
 jobs:
@@ -31,6 +32,7 @@ jobs:
     - stage: deploy
       name: 'deploy'
       script:
+        - docker login --email=$DOCKER_HUB_EMAIL --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         - docker buildx create --name magic-agent
         - docker buildx use magic-agent
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:latest . --push
@@ -39,6 +41,7 @@ jobs:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.radius -t domathologram/test_autobuild:radius . --push
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.alpine.radius -t domathologram/test_autobuild:radius-alpine . --push
 
-
 env:
   global:
+    - DOCKER_BUILDKIT=1
+    - DOCKER_CLI_EXPERIMENTAL=enabled
