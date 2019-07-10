@@ -14,6 +14,8 @@ before_install:
 install: 
   - pip3 install --upgrade pip 
   - pip3 install pylint
+  - pip3 install pytest
+  - pip3 install psutil
   - pip3 install .
 
 jobs:
@@ -29,6 +31,14 @@ jobs:
     - stage: deploy
       name: 'deploy'
       script:
-        - docker buildx create --name agent
-        - docker buildx use agent
-        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t magicnetwork/latest . --push
+        - docker buildx create --name magic-agent
+        - docker buildx use magic-agent
+        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:latest . --push
+        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:gateway . --push
+        - docker buildx build --build-arg AGENT_TYPE=payment --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:payments . --push
+        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.radius -t domathologram/test_autobuild:radius . --push
+        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.alpine.radius -t domathologram/test_autobuild:radius-alpine . --push
+
+
+env:
+  global:
