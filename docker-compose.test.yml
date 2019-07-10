@@ -2,6 +2,9 @@ version: '3'
 
 services:
   sut:
+    build: 
+      context: .
+      dockerfile: Dockerfile.agent
     depends_on:
       - lint
       - test
