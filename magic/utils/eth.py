@@ -1,3 +1,4 @@
+import os
 from web3 import Web3
 from web3.auto import w3
 from ethereum.utils import privtoaddr, encode_hex, decode_hex, ecsign, sha3, normalize_key, ecrecover_to_pub, checksum_encode
