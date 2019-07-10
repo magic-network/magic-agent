@@ -31,12 +31,12 @@ jobs:
       script:
         - pip3 install coveralls
         - pip3 install pytest
-        - coverage run --source=./magic setup.py test
+        - coverage run setup.py test
         - pytest
     - stage: deploy
       name: 'deploy'
       script:
-        - docker login --email=$DOCKER_HUB_EMAIL --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
+        - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:latest . --push
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:gateway . --push
         - docker buildx build --build-arg AGENT_TYPE=payment --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:payments . --push
