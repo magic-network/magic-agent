@@ -1,17 +1,33 @@
-language: python            # this works for Linux but is an error on macOS or Windows
-matrix:
-  include:
-    - name: "Python 3.7.1 on Xenial Linux"
-      python: 3.7           # this works for Linux but is ignored on macOS or Windows
-      dist: xenial          # required for Python >= 3.7
-    - name: "Python 3.7.2 on macOS"
-      os: osx
-      osx_image: xcode10.2  # Python 3.7.2 running on macOS 10.14.3
-      language: shell       # 'language: python' is an error on Travis CI macOS
+language: python
+services:
+  - docker
+name: "Python 3.7.1 on Xenial Linux"
+python: 3.7           
+dist: xenial          # required for Python >= 3.7
+
+before_install:
+  - apt purge docker-ce docker-ce-cli
+  - curl -fsSL https://get.docker.com/ -o docker-install.sh
+  - CHANNEL=nightly sh docker-install.sh
+
 install: 
-  - pip3 install --upgrade pip  # all three OSes agree about 'pip3'
+  - pip3 install --upgrade pip 
   - pip3 install pylint
   - pip3 install .
-script: 
-  - pylint -rn --errors-only ./magic
-  - pytest
+
+jobs:
+  include:
+    - stage: lint
+      name: 'lint'
+      script: 
+        - pylint -rn --errors-only ./magic
+    - stage: test
+      name: 'test'
+      script:
+        - pytest
+    - stage: deploy
+      name: 'deploy'
+      script:
+        - docker buildx create --name agent
+        - docker buildx use agent
+        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t magicnetwork/latest . --push
