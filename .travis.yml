@@ -17,8 +17,6 @@ before_install:
 
 install: 
   - pip3 install --upgrade pip 
-  - pip3 install pylint
-  - pip3 install pytest
   - pip3 install .
 
 jobs:
@@ -26,10 +24,14 @@ jobs:
     - stage: lint
       name: 'lint'
       script: 
+        - pip3 install pylint
         - pylint -rn --errors-only ./magic
     - stage: test
       name: 'test'
       script:
+        - pip3 install coveralls
+        - pip3 install pytest
+        - coverage run --source=./magic setup.py test
         - pytest
     - stage: deploy
       name: 'deploy'
