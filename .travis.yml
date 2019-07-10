@@ -7,7 +7,7 @@ dist: xenial          # required for Python >= 3.7
 sudo: required
 
 before_install:
-  - sudo apt purge docker-ce docker-ce-cli
+  # - sudo apt purge docker-ce docker-ce-cli
   - curl -fsSL https://get.docker.com/ -o docker-install.sh
   - CHANNEL=nightly sh docker-install.sh
 
