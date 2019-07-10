@@ -21,8 +21,7 @@ setup(
     dependency_links=[
         'git+https://github.com/polyswarm/ethash.git#egg=pyethash-0.1.27'
     ],
-    setup_requires=["pytest-runner"],
-    tests_require=["pytest"],
+    tests_require=["pytest-runner", "pytest", "psutil"],
     scripts=['magic/bin/magic-network'],
     license='MIT'
 )
