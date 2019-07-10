@@ -4,6 +4,7 @@ services:
 name: "Python 3.7.1 on Xenial Linux"
 python: 3.7           
 dist: xenial          # required for Python >= 3.7
+sudo: required
 
 before_install:
   - apt purge docker-ce docker-ce-cli
