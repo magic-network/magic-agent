@@ -29,10 +29,9 @@ jobs:
     - stage: test
       name: 'test'
       script:
-        - pip3 install coveralls
-        - pip3 install pytest
-        - coverage run setup.py test
-        - pytest
+        - pip3 install coveralls pytest-cov
+        - py.test --cov magic
+        - coveralls
     - stage: deploy
       name: 'deploy'
       script:
