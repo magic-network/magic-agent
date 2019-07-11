@@ -1,0 +1,16 @@
+FROM domathologram/test_autobuild:agent-base
+
+EXPOSE 5000/tcp
+
+# Set the agent type
+ARG AGENT_TYPE=gateway
+ENV AGENT_TYPE ${AGENT_TYPE}
+
+COPY conf/user-config.hjson magic/${AGENT_TYPE}
+
+COPY resources/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# ENV variables persist from parent images
+RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/supervisor/conf.d/supervisord.conf
+RUN sed -i "s@AGENT_TYPE@"${AGENT_TYPE}"@g" /etc/supervisor/conf.d/supervisord.conf
+
+CMD /usr/bin/supervisord

@@ -41,7 +41,7 @@ def add_routes(routes, decorators):
 
             body = await request.json()
 
-            await new_user.mp_channel.create(body["escrow"])
+            await new_user.mp_channel.open(body["escrow"])
 
             return web.json_response({"success": True, "data": new_user.to_response()}, status=201)
         else:

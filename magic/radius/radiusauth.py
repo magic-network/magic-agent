@@ -6,6 +6,9 @@ import argparse
 import logging
 import socket
 import os
+# the files are moved into this folder when we make the radius image so 
+# the linter will complain about it not being found
+#pylint: disable=import-error
 import radiusd
 import authobject
 
@@ -17,7 +20,7 @@ class RadiusAuth():
     def authenticate(self, address, password, sess_id):
         ao = authobject.AuthObject(address, password)
         client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # Docker enables us to use named containers to communcate between one another
+        # Docker enables us to use named containers to communcate between one another, hence gateway, but can be a valid url/ip
         client_sock.connect((os.getenv("GATEWAY_LOC", "gateway"), int(os.getenv("MAGIC_PORT", "12345"))))
         client_sock.send(ao.encode())
         client_sock.shutdown(socket.SHUT_WR)
