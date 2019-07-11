@@ -26,6 +26,7 @@ jobs:
         - pip3 install .
         - pip3 install pylint
         - pylint -rn --errors-only ./magic
+    
     - stage: test
       name: 'test'
       script:
@@ -33,12 +34,17 @@ jobs:
         - pip3 install coveralls pytest-cov
         - py.test --cov magic
         - coveralls
+    
+    - stage: prepare
+      name: 'build docker base image'
+      script:         
+        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.base -t agent-base . --push
+
     - stage: deploy
       # if: branch = master
       name: 'deploy agent'
       script:
         - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
-        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.base -t agent-base . --load
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.simple -t domathologram/test_autobuild:gateway . --push
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.simple --build-arg AGENT_TYPE=payment -t domathologram/test_autobuild:payments . --push
       
