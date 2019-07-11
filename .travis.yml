@@ -35,15 +35,15 @@ jobs:
         - pip3 install coveralls pytest-cov
         - py.test --cov magic
         - coveralls
-    
+    if: branch = master
     - stage: prepare
-      if: branch = master
+      
       name: 'build agent base image'
       script:         
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.base -t domathologram/test_autobuild:agent-base . --push
-
+    
+    if: branch = master
     - stage: deploy
-      if: branch = master
       name: 'deploy gateway'
       script:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.simple -t domathologram/test_autobuild:gateway . --push
