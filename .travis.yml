@@ -6,7 +6,7 @@ python: 3.7
 dist: xenial          # required for Python >= 3.7
 sudo: required
 
-before_install:
+before_script:
   - sudo apt purge docker-ce
   - curl -fsSL https://get.docker.com/ -o docker-install.sh
   - CHANNEL=nightly sh docker-install.sh
@@ -14,6 +14,7 @@ before_install:
   - docker buildx create --name mybuilder
   - docker buildx use mybuilder
   - docker buildx inspect --bootstrap
+  - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
 
 install: 
   - pip3 install --upgrade pip 
@@ -36,28 +37,31 @@ jobs:
         - coveralls
     
     - stage: prepare
+      if: branch = master
       name: 'build agent base image'
       script:         
-        - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.base -t domathologram/test_autobuild:agent-base . --push
 
     - stage: deploy
-      # if: branch = master
-      name: 'deploy agent'
+      if: branch = master
+      name: 'deploy gateway'
       script:
-        - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.simple -t domathologram/test_autobuild:gateway . --push
-        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.simple --build-arg AGENT_TYPE=payment -t domathologram/test_autobuild:payments . --push
       
     - script:
-        - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
+        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.simple --build-arg AGENT_TYPE=payment -t domathologram/test_autobuild:payments . --push
+      name: 'deploy payments'
+
+    - script:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.radius -t domathologram/test_autobuild:radius . --push
       name: 'deploy radius'
 
     - script:
-        - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.alpine.radius -t domathologram/test_autobuild:radius-alpine . --push
       name: 'deploy alpine radius'
+
+# deploy only works for travis supported providers which dockerhub is not one of
+#deploy:
 
 env:
   global:
