@@ -1,3 +1,6 @@
+# Set the repo location
+ARG DOCKERHUB_REPO=magicnetwork/magic-agent
+
 FROM ${DOCKERHUB_REPO}:agent-base
 
 EXPOSE 5000/tcp
