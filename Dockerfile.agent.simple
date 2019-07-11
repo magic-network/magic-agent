@@ -1,4 +1,4 @@
-FROM agent-base
+FROM domathologram/test_autobuild:agent-base
 
 EXPOSE 5000/tcp
 
