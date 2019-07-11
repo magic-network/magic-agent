@@ -4,6 +4,10 @@ RUN apt-get update && apt-get install -y \
 	build-essential automake pkg-config \
 	libtool libffi-dev libssl-dev supervisor
 
+# Set the repo location
+ARG DOCKERHUB_REPO=magicnetwork/magic-agent
+ENV DOCKERHUB_REPO ${DOCKERHUB_REPO}
+
 # Set the install location for the agent
 ARG MAGIC_LOC=/usr/app/agent
 ENV MAGIC_LOC ${MAGIC_LOC}
