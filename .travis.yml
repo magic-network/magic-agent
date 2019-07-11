@@ -49,19 +49,19 @@ jobs:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.simple -t domathologram/test_autobuild:gateway . --push
       
     - script:
-      if: branch = master
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent.simple --build-arg AGENT_TYPE=payment -t domathologram/test_autobuild:payments . --push
       name: 'deploy payments'
+      if: branch = master
 
     - script:
-      if: branch = master
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.radius -t domathologram/test_autobuild:radius . --push
       name: 'deploy radius'
+      if: branch = master
 
     - script:
-      if: branch = master
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.alpine.radius -t domathologram/test_autobuild:radius-alpine . --push
       name: 'deploy alpine radius'
+      if: branch = master
 
 # deploy only works for travis supported providers which dockerhub is not one of
 #deploy:
