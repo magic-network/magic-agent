@@ -1,4 +1,4 @@
-FROM DOCKERHUB_REPO:agent-base
+FROM ${DOCKERHUB_REPO}:agent-base
 
 EXPOSE 5000/tcp
 
