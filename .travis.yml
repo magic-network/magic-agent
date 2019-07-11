@@ -39,12 +39,13 @@ jobs:
         - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:latest . --push
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent -t domathologram/test_autobuild:gateway . --push
-      script:
+    
+    - script:
         - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.agent --build-arg AGENT_TYPE=payment -t domathologram/test_autobuild:payments . --push
       name: 'deploy payments'
       
-      script:
+    - script:
         - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.radius -t domathologram/test_autobuild:radius . --push
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.alpine.radius -t domathologram/test_autobuild:radius-alpine . --push
