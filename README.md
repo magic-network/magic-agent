@@ -1,5 +1,8 @@
 # Magic Agent
 
+[![Build Status](https://travis-ci.org/magic-network/magic-agent.svg?branch=master)](https://travis-ci.org/magic-network/magic-agent)
+[![Coverage Status](https://coveralls.io/repos/github/magic-network/magic-agent/badge.svg?branch=master)](https://coveralls.io/github/magic-network/magic-agent?branch=master)
+
 This repository contains the source code for the following magic-network services:
 
 1. Magic Gateway Provider (to be used in conjunction with a router/AP device)

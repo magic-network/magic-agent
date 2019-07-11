@@ -1,0 +1,34 @@
+FROM freeradius/freeradius-server:latest
+
+# Using pip more than doubles the image size
+# RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+# RUN apt-get update && apt-get install python-pip -y
+# RUN pip install future
+
+RUN apt-get update && apt-get install curl python -y
+
+# Set the install location for the agent
+ARG MAGIC_LOC=/usr/app/agent
+ENV MAGIC_LOC ${MAGIC_LOC}
+WORKDIR ${MAGIC_LOC}
+
+# Fixes ImportError (No module named builtins) for python 2
+RUN curl https://files.pythonhosted.org/packages/90/52/e20466b85000a181e1e144fd8305caf2cf475e2f9674e797b222f8105f5f/future-0.17.1.tar.gz | tar -xz \
+    && cd future-0.17.1 && python setup.py install \
+    && cd .. && rm -r future-0.17.1
+
+# Copy all the files we actually need to run the agents
+COPY magic/radius magic/radius
+COPY magic/utils/authobject.py magic/radius/authobject.py
+
+# Move the resources into place
+COPY resources/inner-tunnel /etc/freeradius/sites-enabled/inner-tunnel
+COPY resources/python-magic /etc/freeradius/mods-enabled/python-magic
+RUN sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" /etc/freeradius/mods-enabled/python-magic
+COPY resources/eap /etc/freeradius/mods-enabled/eap
+COPY resources/clients.conf /etc/freeradius/clients.conf
+
+# Install the certs
+COPY ssl/* /etc/freeradius/certs/
+
+CMD ["freeradius", "-X"] # Set default command

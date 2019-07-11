@@ -5,18 +5,19 @@ from __future__ import (absolute_import, division,
 from builtins import (bytes, str)
 import json
 
-class AuthObject(object):
-    def __init__(self, address = '', password = '', sess = ''):
+
+class AuthObject():
+    def __init__(self, address='', password='', sess=''):
         self.params = {
-                'address':address,
-                'password':password,
-                'sessionId':sess
-                }
+            'address': address,
+            'password': password,
+            'sessionId': sess
+        }
         self.required = ('address', 'password')
 
     def __repr__(self):
         return "<{} {}>".format(type(self).__name__,
-                repr(self.params))
+                                repr(self.params))
 
     @property
     def address(self):
@@ -40,5 +41,3 @@ class AuthObject(object):
     def encode(self):
         jsonstr = json.dumps(self.params) + '\n'
         return jsonstr.encode('utf8')
-
-

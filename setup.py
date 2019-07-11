@@ -17,9 +17,11 @@ setup(
     author_email='support@hologram.io',
     packages=find_packages(),
     include_package_data=True,
-    install_requires = open('requirements.txt').read().split(),
-    setup_requires=["pytest-runner"],
-    tests_require = ["pytest"],
+    install_requires=open('requirements.txt').read().split(),
+    dependency_links=[
+        'git+https://github.com/polyswarm/ethash.git#egg=pyethash-0.1.27'
+    ],
+    tests_require=["pytest-runner", "pytest", "psutil"],
     scripts=['magic/bin/magic-network'],
     license='MIT'
 )

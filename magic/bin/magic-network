@@ -15,8 +15,8 @@ import os
 from configparser import ConfigParser
 
 from magic.exceptions.magic_error import MagicError
-from magic.gateway.app import MagicGateway
-from magic.payment.app import MagicPayment
+from magic.gateway.agent import MagicGateway
+from magic.payment.agent import MagicPayment
 
 config = ConfigParser()
 
@@ -34,9 +34,11 @@ def gateway_start():
     mg = MagicGateway()
     mg.run()
 
+
 def payment_start():
     pe = MagicPayment()
     pe.run()
+
 
 def parse_magic_gateway_args(parser):
     """
@@ -53,6 +55,7 @@ def parse_magic_gateway_args(parser):
 
     parser_gateway = subparsers.add_parser('start', help=help_gateway_start)
     parser_gateway.set_defaults(command_selected='gateway_start')
+
 
 def parse_magic_payment_args(parser):
     """
@@ -72,20 +75,24 @@ def parse_magic_payment_args(parser):
 
 # --------- Valid Commands --------- #
 
+
 _command_handlers = {
     'gateway_start': gateway_start,
     'payment_start': payment_start
 }
 
-def parse_operations():
 
+def parse_operations():
     """
     Parse incoming arguments from the command line
     :return: a dictionary of arguments
     """
 
-    parser = argparse.ArgumentParser(description="CLI for connecting to the magic network")
-    subparsers = parser.add_subparsers(title='subcommands', description='valid subcommands')
+    parser = argparse.ArgumentParser(
+        description="CLI for connecting to the magic network")
+    subparsers = parser.add_subparsers(
+        title='subcommands',
+        description='valid subcommands')
 
     # Parse connect subcommands
     parser_gateway = subparsers.add_parser('gateway', help=help_gateway)
@@ -99,13 +106,16 @@ def parse_operations():
 
     return vars(parser.parse_args())
 
+
 def parse_version(parser):
     parser.set_defaults(command_selected='version')
+
 
 def run_version():
     verfile = os.path.dirname(__file__) + '/../../version.txt'
     version = open(verfile).read().split()[0]
     print(version)
+
 
 def main():
 
