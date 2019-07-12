@@ -2,12 +2,13 @@
 import logging
 import asyncio
 import os
-from web3 import Web3
+from magic.utils.eth import parse_address
 from magic.agent import MagicAgent
-from magic.gateway.magicradiusd import RadiusDaemon
-from magic.gateway.radiusreq import RadiusReq
-from magic.gateway.user import User
-from magic.gateway.payment.payment_type import PaymentTypeFactory
+from magic.gateway.radius.magicradiusd import RadiusDaemon
+from magic.gateway.api import GatewayApi
+from magic.gateway.radius.radiusreq import RadiusReq
+from magic.gateway.entity.user import User
+from magic.gateway.entity.payment_type.payment_type import PaymentTypeFactory
 
 
 class MagicGateway(MagicAgent):
@@ -15,6 +16,8 @@ class MagicGateway(MagicAgent):
     def __init__(self):
         self.type = "gateway"
         self.load_config(os.path.dirname(os.path.realpath(__file__)))
+        self.addr = parse_address(self.config['admin']['eth_address'])
+        self.key = self.config['admin']['eth_private_key']
         super().__init__()
         self.logger = logging.getLogger('MagicGateway')
         self.radius_daemon = RadiusDaemon(self)
@@ -23,6 +26,7 @@ class MagicGateway(MagicAgent):
                 self.config)
         except Exception as e:
             self.logger.warning(e)
+        self.api = GatewayApi(self)
         self.radius_requester = RadiusReq(self.config)
         self.users = {}
 
@@ -33,7 +37,7 @@ class MagicGateway(MagicAgent):
         # signal.signal(signal.SIGINT, self.sighandler)
 
         self.logger.warning(
-            "Magic App Service started using eth address %s",
+            "Magic Gateway Service started using eth address %s",
             self.config['admin']['eth_address'])
 
         self.radius_daemon.daemon = True
@@ -43,6 +47,7 @@ class MagicGateway(MagicAgent):
     async def heartbeat(self):
 
         # TODO: make this work in batches using asyncio.gather
+        # TODO: Add locking mechanism so long-running user processes don't get triggered twice.
         for key in self.users:
             await self.users[key].on_heartbeat()
 
@@ -66,7 +71,7 @@ class MagicGateway(MagicAgent):
 
     async def on_keepalive(self, address, signed_message):
         """
-        Called from the flask server when a user reports in with a GET request to /keepalive
+        Called from the web server when a user reports in with a GET request to /keepalive
         :param address: address name
         :param signed_message: message indicating session details sent from client
         """

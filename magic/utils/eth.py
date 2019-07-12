@@ -1,7 +1,7 @@
 import os
-from ethereum.utils import sha3
 from web3 import Web3
 from web3.auto import w3
+from ethereum.utils import privtoaddr, encode_hex, decode_hex, ecsign, sha3, normalize_key, ecrecover_to_pub, checksum_encode
 
 # Generate a new ethereum account
 
@@ -18,13 +18,24 @@ def generate_account():
         'privkey': priv_hex,
     })
 
+def sign(message, key):
+    msg_hash = sha3(message)
+    sig_object = w3.eth.account.signHash(msg_hash, private_key=key)
+    return sig_object.signature.hex()
 
 def verify_sig(message, signature, address):
     msg_hash = sha3(message)
-    recovered_address = w3.eth.account.recoverHash(
-        msg_hash, signature=signature)
+
+    try:
+        recovered_address = w3.eth.account.recoverHash(msg_hash, signature=signature)
+    except:
+        return False
+
     return address == recovered_address
 
 
 def parse_address(address_string):
     return Web3.toChecksumAddress(address_string.lower())
+
+def pubtoaddr(pub):
+    return encode_hex(sha3(pub)[-20:])

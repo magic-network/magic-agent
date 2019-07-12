@@ -40,9 +40,9 @@ mv ./resources/clients.conf /etc/freeradius/3.0/clients.conf
 mv ssl/* /etc/freeradius/3.0/certs/
 
 # Add services to startup 
-sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" ./magic.service
-sudo mv ./magic.service /lib/systemd/system/magic.service
-sudo mv ./freeradius.service /lib/systemd/system/freeradius.service
+sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" ./resources/services/magic.service
+sudo mv ./resources/services/magic.service /lib/systemd/system/magic.service
+sudo mv ./resources/services/freeradius.service /lib/systemd/system/freeradius.service
 
 sudo systemctl daemon-reload
 sudo systemctl enable magic.service
