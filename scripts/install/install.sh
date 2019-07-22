@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo apt-get update && \
-    apt-get install -yy \
+    sudo apt-get install -yy \
         freeradius \
         freeradius-config \
         freeradius-common \

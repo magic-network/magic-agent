@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo apt update && apt install git python-pip
+sudo apt update && sudo apt install -yy git python-pip 
 
 # Install Docker
 curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
@@ -15,7 +15,7 @@ docker-compose up -d
 
 # Install the startup service
 sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" ./resources/services/magic_docker.service
-sudo mv ./resources/services/magic_docker.service /lib/systemd/system/magic_docker.service
+sudo mv ./resources/services/magic_docker.service /lib/systemd/system/magic.service
 sudo chmod 644 /lib/systemd/system/magic.service
 sudo systemctl daemon-reload
 sudo systemctl enable magic.service
