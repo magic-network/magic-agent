@@ -53,13 +53,14 @@ jobs:
       name: 'deploy payments'
       if: branch = master
 
+      # Right now there is no ARM images on dockerhub for freeradius
     - script:
-        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file Dockerfile.radius -t $DOCKERHUB_REPO:radius . --push
+        - docker buildx build --platform linux/amd64 --file Dockerfile.radius -t $DOCKERHUB_REPO:radius . --push
       name: 'deploy radius'
       if: branch = master
 
     - script:
-        - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file ./scripts/docker/Dockerfile.alpine.radius -t $DOCKERHUB_REPO:radius-alpine . --push
+        - docker buildx build --platform linux/amd64 --file ./scripts/docker/Dockerfile.alpine.radius -t $DOCKERHUB_REPO:radius-alpine . --push
       name: 'deploy alpine radius'
       if: branch = master
 
