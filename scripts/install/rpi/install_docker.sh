@@ -7,6 +7,6 @@ sudo usermod -aG docker pi
 sudo apt install -yy docker-compose
 sudo pip install docker-compose==1.23.2
 
-curl -fsSL https://raw.githubusercontent.com/magic-network/magic-agent/master/scripts/install/install_magic.sh -o install_magic.sh 
+curl -fsSL https://raw.githubusercontent.com/magic-network/magic-agent/master/scripts/install/rpi/install_magic.sh -o install_magic.sh 
 
 sudo reboot
