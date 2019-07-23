@@ -2,9 +2,9 @@
 sudo apt update && sudo apt install -yy git python-pip 
 
 # Install Docker
-curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
+curl -fsSL get.docker.com -o get-docker.sh && sudo sh get-docker.sh
 sudo usermod -aG docker pi
-sudo apt install docker-compose
+sudo apt install -yy docker-compose
 sudo pip install docker-compose==1.23.2
 
 # Clone in the repo and build
