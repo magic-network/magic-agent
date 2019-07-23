@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.radius
       args:
         MAGIC_LOC: /usr/app/agent
-    image: magicnetwork/magic-radius
+    image: magicnetwork/magic-agent:radius
     ports:
       - "1812:1812/udp"
       - "1813:1813/udp"
@@ -23,7 +23,7 @@ services:
       args:
         MAGIC_LOC: /usr/app/agent
         AGENT_TYPE: gateway
-    image: magicnetwork/magic-gateway
+    image: magicnetwork/magic-agent:gateway
     ports:
       - "5000:5000"
     environment:
@@ -35,7 +35,7 @@ services:
       args:
         MAGIC_LOC: /usr/app/agent
         AGENT_TYPE: payment
-    image: magicnetwork/magic-payments
+    image: magicnetwork/magic-agent:payments
     ports:
       - "8080:5001"
     environment:
