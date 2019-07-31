@@ -2,6 +2,16 @@ import os
 import hjson
 import json
 
+# Python 2 Compat stuff cuz of freeradius
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
+try:
+  basestring
+except NameError:
+  basestring = str
 
 class ConfigLoader(dict):
 
@@ -24,21 +34,24 @@ class ConfigLoader(dict):
         try:
             with open(user_config_path) as f:
                 user_config = hjson.load(f)
-                for config_group_key in self:
-                    config_group_value = self[config_group_key]
-                    for config_key in config_group_value:
-                        try:
-                            user_config_item = user_config[config_group_key][config_key]
-                            self[config_group_key][config_key] = self.determine_valid_mapping(
-                                user_config_item, self[config_group_key][config_key])
-                        except KeyError:
-                            pass
+                self.parse_user_keys_r(self, user_config)
 
         except FileNotFoundError:
             pass
 
         # Apply environment variables:
         self.parse_env_keys_r(self, [])
+
+    def parse_user_keys_r(self, d, ud):
+        for k in ud:
+            v = ud[k]
+            if isinstance(v, dict):
+                if k in d:
+                    self.parse_user_keys_r(d[k], v)
+                else:
+                    self.parse_user_keys_r(d, v)
+            else:
+                d[k] = v
 
     def parse_env_keys_r(self, d, key_str):
         for k in d:
@@ -48,8 +61,9 @@ class ConfigLoader(dict):
                 self.parse_env_keys_r(v, key_str)
             else:
                 try:
-                    env_key = '_'.join(str(s) for s in key_str) + "_" + k.upper()
+                    env_key = '_'.join(str(s) for s in (key_str + [k.upper()]))
                     env_var_value = self.determine_valid_mapping(os.environ[env_key], v)
+                    print(env_var_value)
                     d[k] = env_var_value
                 except KeyError:
                     # don't do anything if an environment variable is not found.
@@ -65,7 +79,7 @@ class ConfigLoader(dict):
         :param conversion_class: value with the type we want to convert to
         :return the value mapped to its proper type
         """
-        if isinstance(conversion_class, str):
+        if isinstance(conversion_class, basestring):
             return self.map_to_valid_value(str, value, conversion_class).strip()
         if type(conversion_class) is int:
             return self.map_to_valid_value(int, value, conversion_class)
@@ -76,7 +90,7 @@ class ConfigLoader(dict):
         if isinstance(conversion_class, list):
             return self.convert_str_to_list(value, conversion_class)
         if isinstance(conversion_class, dict):
-            if isinstance(value, str):
+            if isinstance(value, basestring):
                 return json.loads(value.strip())
             elif isinstance(value, dict):
                 return value
@@ -89,7 +103,7 @@ class ConfigLoader(dict):
         :param value: the string to be converted to a list
         :return a list of the split string
         """
-        if isinstance(value, str):
+        if isinstance(value, basestring):
             # remove the brackets if they exist
             if value[0] == '[':
                 value = value[1:-1]
@@ -123,6 +137,6 @@ class ConfigLoader(dict):
         :param val: value to be converted to a boolean
         :return the boolean value
         """
-        if isinstance(val, str):
+        if isinstance(val, basestring):
             return val.lower() in ("yes", "true", "t", "1")
         return bool(val)
