@@ -14,8 +14,8 @@ services:
     environment:
       - ADMIN_ROUTER_ADDRESS=192.168.1.1
       - ADMIN_RADIUS_SECRET=magicsecret
-      - MAGIC_PORT=12345
-      - GATEWAY_LOC=gateway
+      - MAGIC_GATEWAY_PORT=12345
+      - MAGIC_GATEWAY_LOCATION=gateway
   gateway:
     build: 
       context: .
@@ -27,7 +27,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MAGIC_PORT=12345
+      - MAGIC_GATEWAY_PORT=12345
   payments:
     build: 
       context: .

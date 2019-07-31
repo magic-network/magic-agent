@@ -26,6 +26,14 @@
   # "prorata": true
 
   },
+  "magic": {
+    "sockpath": "/tmp/magicsock"
+    "combined": false
+    "gateway": {
+      "location": "gateway"
+      "port": 54321
+    }
+  }
   "dev": {
     "address": ""
     "password": ""

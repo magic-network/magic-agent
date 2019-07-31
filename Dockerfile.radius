@@ -3,7 +3,7 @@ FROM freeradius/freeradius-server:latest
 # Using pip more than doubles the image size
 # RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 # RUN apt-get update && apt-get install python-pip -y
-# RUN pip install future
+# RUN pip install future hjson
 
 RUN apt-get update && apt-get install curl python -y
 
@@ -17,9 +17,16 @@ RUN curl https://files.pythonhosted.org/packages/90/52/e20466b85000a181e1e144fd8
     && cd future-0.17.1 && python setup.py install \
     && cd .. && rm -r future-0.17.1
 
+RUN curl https://files.pythonhosted.org/packages/8a/92/6b6b85064f8a88cb3b31901d839e7b45c33e4ee450bb1b3cf0c226cca8ec/hjson-3.0.1.tar.gz | tar -xz \
+    && cd hjson-3.0.1 && python setup.py install \
+    && cd .. && rm -r hjson-3.0.1
+
 # Copy all the files we actually need to run the agents
 COPY magic/radius magic/radius
 COPY magic/utils/authobject.py magic/radius/authobject.py
+COPY magic/utils/configloader.py magic/radius/configloader.py
+COPY magic/gateway/default-config.hjson magic/radius/default-config.hjson
+COPY conf/user-config.hjson magic/radius/user-config.hjson
 
 # Move the resources into place
 COPY resources/inner-tunnel /etc/freeradius/sites-enabled/inner-tunnel

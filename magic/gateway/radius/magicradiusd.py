@@ -62,12 +62,26 @@ class RadiusDaemon(threading.Thread):
 
         self.logger.warning("Magic Radius Service started")
 
-        ipc_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if self.config['magic']['combined']:
+            ipc_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            sockpath = self.config['magic']['sockpath']
 
-        ipc_sock.bind(('', int(os.getenv("MAGIC_PORT", "12345"))))
-        ipc_sock.listen(1)
+            try:
+                os.unlink(sockpath)
+            except FileNotFoundError:
+                pass
+            ipc_sock.bind(sockpath)
+            os.chmod(sockpath, 666)
+            ipc_sock.listen(1)
 
-        self.logger.warning("Listening on port %s", os.getenv("MAGIC_PORT", "12345"))
+            self.logger.warning("Listening on %s", sockpath)
+        else:
+            ipc_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            ipc_sock.bind(('', int(self.config['magic']['gateway']['port'])))
+            ipc_sock.listen(1)
+
+            self.logger.warning("Listening on port %s", self.config['magic']['gateway']['port'])
 
         while True:
             try:

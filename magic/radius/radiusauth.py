@@ -11,17 +11,31 @@ import os
 #pylint: disable=import-error
 import radiusd
 import authobject
-
+from configloader import ConfigLoader
 
 class RadiusAuth():
     def __init__(self):
         self.logger = logging.getLogger('RadiusAuth')
+        self.load_config(os.path.dirname(os.path.realpath(__file__)))
+
+    def load_config(self, root_folder_path):
+        default_config_path = root_folder_path + '/default-config.hjson'
+        user_config_path = root_folder_path + '/user-config.hjson'
+
+        self.config = ConfigLoader()
+        self.config.load(
+            default_config_path=default_config_path,
+            user_config_path=user_config_path)
 
     def authenticate(self, address, password, sess_id):
         ao = authobject.AuthObject(address, password)
-        client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # Docker enables us to use named containers to communcate between one another, hence gateway, but can be a valid url/ip
-        client_sock.connect((os.getenv("GATEWAY_LOC", "gateway"), int(os.getenv("MAGIC_PORT", "12345"))))
+        if self.config['magic']['combined']:
+            client_sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            client_sock.connect(self.config['magic']['sockpath'])
+        else:
+            client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # Docker enables us to use named containers to communcate between one another, hence gateway, but can be a valid url/ip
+            client_sock.connect((self.config['magic']['gateway']['location'], int(self.config['magic']['gateway']['port'])))
         client_sock.send(ao.encode())
         client_sock.shutdown(socket.SHUT_WR)
         buf = client_sock.recv(1)
