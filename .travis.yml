@@ -39,7 +39,7 @@ matrix:
       
     - script:
         - pip install future hjson pytest
-        - rm -r tests/agents
+        - rm -r tests/agent
         - py.test tests/radius/
       name: 'test python 2'
       python: 2.7
