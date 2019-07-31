@@ -6,7 +6,8 @@ def test_default_config():
     root_path = os.path.dirname(os.path.realpath(__file__))
 
     config = ConfigLoader()
-    config.load(default_config_path=root_path + '/default-config.hjson')
+    config.load(default_config_path=root_path + '/default-config.hjson',
+                user_config_path='')
 
     assert config["key"] == "value"
     assert config["nest"]["nest_key_1"] == 1
@@ -19,7 +20,7 @@ def test_user_config():
 
     config = ConfigLoader()
     config.load(default_config_path=root_path + '/default-config.hjson',
-        user_config_path=root_path + '/user-config.hjson')
+                user_config_path=root_path + '/user-config.hjson')
 
     assert config["key"] == "new_value"
     assert config["nest"]["nest_key_1"] == 2
@@ -35,7 +36,7 @@ def test_env_config():
 
     config = ConfigLoader()
     config.load(default_config_path=root_path + '/default-config.hjson',
-        user_config_path=root_path + '/user-config.hjson')
+                user_config_path=root_path + '/user-config.hjson')
 
     assert config["key"] == "env_value"
     assert config["nest"]["nest_key_1"] == 2

@@ -2,7 +2,9 @@ language: python
 services:
   - docker
 name: "Python 3.7.1 on Xenial Linux"
-python: 3.7           
+python: 
+  - 2.7
+  - 3.7           
 dist: xenial          # required for Python >= 3.7
 sudo: required
 
@@ -17,25 +19,36 @@ before_script:
   - docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
 
 install: 
-  - pip3 install --upgrade pip 
+  - pip install --upgrade pip 
 
 jobs:
   include:
     - stage: lint
       name: 'lint'
       script: 
-        - pip3 install .
-        - pip3 install pylint
+        if: [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]
+        - pip install .
+        - pip install pylint
         - pylint -rn --errors-only ./magic
     
     - stage: test
-      name: 'test'
-      script:
-        - pip3 install .
-        - pip3 install coveralls pytest-cov
+      if: [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]
+      name: 'test python 3'
+      script:      
+        - pip install .
+        - pip install coveralls pytest-cov
+        - rm -r tests/radius
         - py.test --cov magic
         - coveralls
-    
+      
+      script:
+        - pip install .
+        - pip install pytest
+        - rm -r tests/agents
+        - py.test tests/radius/
+        name: 'test python 2'
+        if: [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]
+
     - stage: prepare
       if: branch = master
       name: 'build agent base image'
@@ -43,7 +56,7 @@ jobs:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file ./scripts/docker/Dockerfile.agent.base -t $DOCKERHUB_REPO:agent-base . --push
 
     - stage: deploy
-      if: branch = master
+      if: [[ branch = master && $TRAVIS_PYTHON_VERSION == 3.7 ]]
       name: 'deploy gateway'
       script:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file ./scripts/docker/Dockerfile.agent.derived --build-arg DOCKERHUB_REPO=$DOCKERHUB_REPO -t $DOCKERHUB_REPO:gateway . --push
@@ -51,18 +64,18 @@ jobs:
     - script:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file ./scripts/docker/Dockerfile.agent.derived --build-arg DOCKERHUB_REPO=$DOCKERHUB_REPO --build-arg AGENT_TYPE=payment -t $DOCKERHUB_REPO:payments . --push
       name: 'deploy payments'
-      if: branch = master
+      if: [[ branch = master && $TRAVIS_PYTHON_VERSION == 3.7 ]]
 
       # Right now there is no ARM images on dockerhub for freeradius
     - script:
         - docker buildx build --platform linux/amd64 --file Dockerfile.radius -t $DOCKERHUB_REPO:radius . --push
       name: 'deploy radius'
-      if: branch = master
+      if: [[ branch = master && $TRAVIS_PYTHON_VERSION == 3.7 ]]
 
     - script:
         - docker buildx build --platform linux/amd64 --file ./scripts/docker/Dockerfile.alpine.radius -t $DOCKERHUB_REPO:radius-alpine . --push
       name: 'deploy alpine radius'
-      if: branch = master
+      if: [[ branch = master && $TRAVIS_PYTHON_VERSION == 3.7 ]]
 
 # deploy only works for travis supported providers which dockerhub is not one of
 #deploy:

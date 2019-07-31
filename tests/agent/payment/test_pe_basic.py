@@ -5,7 +5,7 @@ from magic.utils.configloader import ConfigLoader
 def test_default_config(payment_enabler):
 
     payment_root_path = os.path.dirname(
-        os.path.realpath(__file__)) + '/../../magic/payment'
+        os.path.realpath(__file__)) + '/../../../magic/payment'
 
     config = ConfigLoader()
     config.load(
