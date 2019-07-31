@@ -24,9 +24,9 @@ install:
 jobs:
   include:
     - stage: lint
+      if: [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]
       name: 'lint'
       script: 
-        if: [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]
         - pip install .
         - pip install pylint
         - pylint -rn --errors-only ./magic
@@ -41,13 +41,13 @@ jobs:
         - py.test --cov magic
         - coveralls
       
-      script:
+    - script:
         - pip install .
         - pip install pytest
         - rm -r tests/agents
         - py.test tests/radius/
-        name: 'test python 2'
-        if: [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]
+      name: 'test python 2'
+      if: [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]
 
     - stage: prepare
       if: branch = master
