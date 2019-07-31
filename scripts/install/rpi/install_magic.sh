@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Build Freeradius image, currently no ARM image on dockerhub
-curl -fsSL https://raw.githubusercontent.com/FreeRADIUS/freeradius-server/v3.0.x/scripts/docker/alpine/Dockerfile -o Dockerfile
-curl -fsSL https://raw.githubusercontent.com/FreeRADIUS/freeradius-server/v3.0.x/scripts/docker/alpine/docker-entrypoint.sh -o docker-entrypoint.sh
+curl -fsSL https://raw.githubusercontent.com/FreeRADIUS/freeradius-server/v3.0.x/scripts/docker/ubuntu18/Dockerfile -o Dockerfile
+curl -fsSL https://raw.githubusercontent.com/FreeRADIUS/freeradius-server/v3.0.x/scripts/docker/ubuntu18/docker-entrypoint.sh -o docker-entrypoint.sh
+chmod 777 ./docker-entrypoint.sh
 docker build . -t freeradius
 
 # Clone in the repo and build
