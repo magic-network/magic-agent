@@ -32,14 +32,13 @@ matrix:
       name: 'test python 3'
       script:      
         - pip install .
-        - pip install coveralls pytest-cov
+        - pip install coveralls
         - rm -r tests/radius
-        - py.test --cov magic
+        - coverage run --source magic -m py.test
         - coveralls
       
     - script:
-        - pip install .
-        - pip install pytest
+        - pip install future hjson pytest
         - rm -r tests/agents
         - py.test tests/radius/
       name: 'test python 2'
