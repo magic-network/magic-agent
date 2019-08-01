@@ -40,7 +40,7 @@ matrix:
     - script:
         - pip install future hjson pytest
         - rm -r tests/agent
-        - cp magic/radius/* tests/radius/*
+        - cp -r magic/radius/ tests/radius/
         - cp magic/utils/authobject.py tests/radius/authobject.py
         - cp magic/utils/configloader.py tests/radius/configloader.py
         - py.test tests/radius/
