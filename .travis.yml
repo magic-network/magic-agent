@@ -48,13 +48,13 @@ matrix:
       python: 2.7
 
     - stage: prepare
-      if: 'branch = master && "$TRAVIS_PULL_REQUEST" == "false"'
+      if: type = push AND branch = master
       name: 'build agent base image'
       script:         
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file ./scripts/docker/Dockerfile.agent.base -t $DOCKERHUB_REPO:agent-base . --push
 
     - stage: deploy
-      if: 'branch = master && "$TRAVIS_PULL_REQUEST" == "false"'
+      if: type = push AND branch = master
       name: 'deploy gateway'
       script:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file ./scripts/docker/Dockerfile.agent.derived --build-arg DOCKERHUB_REPO=$DOCKERHUB_REPO -t $DOCKERHUB_REPO:gateway . --push
@@ -62,18 +62,18 @@ matrix:
     - script:
         - docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --file ./scripts/docker/Dockerfile.agent.derived --build-arg DOCKERHUB_REPO=$DOCKERHUB_REPO --build-arg AGENT_TYPE=payment -t $DOCKERHUB_REPO:payments . --push
       name: 'deploy payments'
-      if: 'branch = master && "$TRAVIS_PULL_REQUEST" == "false"'
+      if: type = push AND branch = master
 
       # Right now there is no ARM images on dockerhub for freeradius
     - script:
         - docker buildx build --platform linux/amd64 --file Dockerfile.radius -t $DOCKERHUB_REPO:radius . --push
       name: 'deploy radius'
-      if: 'branch = master && "$TRAVIS_PULL_REQUEST" == "false"'
+      if: type = push AND branch = master
 
     - script:
         - docker buildx build --platform linux/amd64 --file ./scripts/docker/Dockerfile.alpine.radius -t $DOCKERHUB_REPO:radius-alpine . --push
       name: 'deploy alpine radius'
-      if: 'branch = master && "$TRAVIS_PULL_REQUEST" == "false"'
+      if: type = push AND branch = master
 
 # deploy only works for travis supported providers which dockerhub is not one of
 #deploy:
