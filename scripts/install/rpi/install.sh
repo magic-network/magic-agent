@@ -22,13 +22,19 @@ cd magic-agent
 
 # Set environment variables
 export MAGIC_LOC=$PWD
-export MAGIC_PORT=12345
-export GATEWAY_LOC=localhost
+export MAGIC_COMBINED=true
+export MAGIC_SOCKPATH=/tmp/magicsock
 
 # Required for freeradius to work
-pip install future
+pip install future hjson
 
-mv ./conf/user-config.hjson ./magic/gateway/config
+# Copy all the files we actually need to run the agents
+cp magic/utils/authobject.py magic/radius/authobject.py
+cp magic/utils/configloader.py magic/radius/configloader.py
+cp magic/gateway/default-config.hjson magic/radius/default-config.hjson
+cp conf/user-config.hjson magic/radius/user-config.hjson
+
+cp conf/user-config.hjson magic/gateway/config
 
 # Install magic, note this installs to the python dist-packages
 # thats why we need the manifest file
