@@ -5,6 +5,7 @@ sudo apt-get update && \
         freeradius-config \
         freeradius-common \
         python \
+        python-dev \
         python3-dev \
         python-pip \
 	build-essential \
@@ -48,6 +49,9 @@ export MAGIC_SOCKPATH=/tmp/magicsock
 
 # Required for freeradius to work
 pip install future hjson
+
+# Make comined 
+sed -i "s@\"combined\": false@\"combined\": true@g" magic/gateway/default-config.hjson
 
 # Copy all the files we actually need to run the agents
 cp magic/utils/authobject.py magic/radius/authobject.py
