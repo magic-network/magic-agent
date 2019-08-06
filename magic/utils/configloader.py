@@ -63,7 +63,6 @@ class ConfigLoader(dict):
                 try:
                     env_key = '_'.join(str(s) for s in (key_str + [k.upper()]))
                     env_var_value = self.determine_valid_mapping(os.environ[env_key], v)
-                    print(env_var_value)
                     d[k] = env_var_value
                 except KeyError:
                     # don't do anything if an environment variable is not found.
