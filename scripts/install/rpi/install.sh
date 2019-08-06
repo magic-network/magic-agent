@@ -17,6 +17,9 @@ sudo apt-get update && \
 	pkg-config \
     git
 
+# install python 3.7 
+curl -fsSL https://gist.githubusercontent.com/SeppPenner/6a5a30ebc8f79936fa136c524417761d/raw/801380a7535eaf7d72e6baf9553a7b4db14c73cb/setup.sh || sh
+
 git clone https://github.com/magic-network/magic-agent
 cd magic-agent
 
