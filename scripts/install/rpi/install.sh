@@ -6,8 +6,8 @@ sudo apt-get update && \
         freeradius-common \
         python \
         python-dev \
-        python3-dev \
         python-pip \
+        python3-dev \
 	build-essential \
     tk-dev \
     libncurses5-dev \
@@ -30,7 +30,8 @@ sudo apt-get update && \
     git
 
 # install python 3.7 
-wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz | tar xf
+wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
+tar xf Python-3.7.0.tar.xz 
 cd Python-3.7.0
 ./configure
 make -j 4
@@ -43,12 +44,12 @@ git clone https://github.com/magic-network/magic-agent
 cd magic-agent
 
 # Set environment variables
-export MAGIC_LOC=$PWD
-export MAGIC_COMBINED=true
-export MAGIC_SOCKPATH=/tmp/magicsock
+MAGIC_LOC="$PWD"; export MAGIC_LOC
+MAGIC_COMBINED=true; export MAGIC_COMBINED
+MAGIC_SOCKPATH=/tmp/magicsock; export MAGIC_SOCKPATH
 
 # Required for freeradius to work
-pip install future hjson
+sudo pip install future hjson
 
 # Make comined 
 sed -i "s@\"combined\": false@\"combined\": true@g" magic/gateway/default-config.hjson
@@ -69,6 +70,7 @@ sudo python3.7 setup.py install
 sudo mv resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
 sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" resources/python-magic
 sudo mv resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
+sed -i "s@etc/raddb/certs@etc/freeradius/3.0/certs@g" resources/python-magic
 sudo mv resources/eap /etc/freeradius/3.0/mods-enabled/eap
 sudo mv resources/clients.conf /etc/freeradius/3.0/clients.conf
 sudo mv ssl/* /etc/freeradius/3.0/certs/
