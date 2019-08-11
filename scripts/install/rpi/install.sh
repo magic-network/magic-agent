@@ -70,7 +70,7 @@ sudo python3.7 setup.py install
 sudo mv resources/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
 sed -i "s@MAGIC_LOC@"${MAGIC_LOC}"@g" resources/python-magic
 sudo mv resources/python-magic /etc/freeradius/3.0/mods-enabled/python-magic
-sed -i "s@etc/raddb/certs@etc/freeradius/3.0/certs@g" resources/python-magic
+sed -i "s@etc/raddb/certs@etc/freeradius/3.0/certs@g" resources/eap
 sudo mv resources/eap /etc/freeradius/3.0/mods-enabled/eap
 sudo mv resources/clients.conf /etc/freeradius/3.0/clients.conf
 sudo mv ssl/* /etc/freeradius/3.0/certs/
@@ -89,6 +89,9 @@ sudo systemctl enable freeradius.service
 sudo apt-get --purge remove build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
 sudo apt-get autoremove -y
 sudo apt-get clean
+
+# cleaning removes this but we need it to run freeradius
+sudo apt-get install -yy python-dev
 
 #reboot to enable changes 
 sudo reboot
